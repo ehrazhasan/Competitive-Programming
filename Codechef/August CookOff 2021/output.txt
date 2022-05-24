@@ -1,0 +1,11 @@
+height[i]=1,leftmax=1,rightmax=3
+height[i]=0,leftmax=1,rightmax=3
+height[i]=2,leftmax=2,rightmax=3
+height[i]=1,leftmax=2,rightmax=3
+height[i]=0,leftmax=2,rightmax=3
+height[i]=1,leftmax=2,rightmax=3
+height[i]=3,leftmax=3,rightmax=3
+height[i]=2,leftmax=3,rightmax=2
+height[i]=1,leftmax=3,rightmax=2
+height[i]=2,leftmax=3,rightmax=2
+6

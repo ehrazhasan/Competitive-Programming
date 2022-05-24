@@ -1,0 +1,16 @@
+0 1 0 4 3 
+suff=1,pref=1
+sumleft=3
+suff=1,pref=0
+sumleft=4
+suff=2,pref=2
+suff=2,pref=0
+sumleft=0
+suff=3,pref=3
+suff=3,pref=2
+suff=3,pref=1
+suff=3,pref=0
+sumleft=1
+suff=4,pref=4
+suff=4,pref=0
+1

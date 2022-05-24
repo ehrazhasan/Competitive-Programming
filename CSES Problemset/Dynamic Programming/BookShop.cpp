@@ -43,6 +43,17 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
                 /*******************************************************************************/
 
 
+/*
+
+	We need to buy maximum number of pages having limit atmost x;
+
+	if i buy the current book with p pages, then the maximum number of pages 
+	if I have j limit = p + the number of pages I had when I had the limit j - current price
+
+
+*/
+
+const int N = 1e5 + 5;
 
 int main(){
     ios::sync_with_stdio(0);
@@ -52,7 +63,49 @@ int main(){
     //cin>>t;
     while(t--){
       	
-      	  
+      	 int n, x;
+      	 cin >> n >> x;
+
+      	 vector<int> prices(n), pages(n);
+      	 rep(i, n) cin >> prices[i];
+      	 rep(i, n) cin >> pages[i]; 
+
+      	 vector<vector<int>> dp(n + 1, vector<int>(N + 5));
+
+
+      	 for(int i = 0; i <= n; i++){
+
+      	 	int p = pages[i];
+      	 	int cp = prices[i];
+
+      	 	for(int j = x; j >= 0; j--){
+
+      	 		
+      	 		if(i == 0){
+
+      	 			dp[i][j] = (cp <= j ? p : 0LL);
+      	 			continue;
+      	 		}
+
+      	 		dp[i][j] = dp[i - 1][j];
+
+      	 		if(j - cp < 0) continue;
+
+      	 		dp[i][j] = max(dp[i][j], dp[i - 1][j - cp] + p);
+      	 	}
+      	 }
+
+      	 // for(int i = 0; i <= n; i++){
+
+      	 // 	for(int j = 0; j <= x; j++){
+
+      	 // 		cout << dp[i][j] << " ";
+      	 // 	}
+      	 // 	cout << endl;
+      	 // }
+
+      	 cout << dp[n - 1][x];
     }
+
     return 0;
 }

@@ -74,122 +74,40 @@ int main(){
     cin>>t;
     while(t--){
         
-        int n, p, k;
+        ll n, p, k;
         cin >> n >> p >> k;
-
+        p--;
         string s;
         cin >> s;
 
         ll x, y;
         cin >> x >> y;
 
+        // db3(n,p,k);
+        vector<ll> dp(n, 0);
+        //int dp[n + 1] = {0};
+       
+        for(int i = n - 1; i >= n - k; i--){
 
-        vector<ll> dp(n + 5, INF);
-
-        int j = p - 1;
-
-        if(s[p - 1] == '1') dp[p - 1] = 0;
-        else{
-
-        	dp[p - 1] = x;
-    		if(p < n and s[p] == '0'){
-
-        		dp[p - 1] = min(dp[p - 1], x);
-        		
-        	}
-        	else if(p < n and s[p] == '1'){
-
-        		dp[p] = min(dp[p], y);
-        		if(x < dp[p]){
-
-        			j = p - 1;
-        		}
-        		else j = p;
-        	}
+            if(s[i] == '1') dp[i] = 0;
+            else dp[i] = 1;
         }
 
+        
+        for(int i = n - k - 1; i >= 0; i--){
 
-        for(int i = j; i < n; i++){
-
-        	//dp[i] = min(dp[i], dp[i - 1]);
-        	if(i + k < n){
-
-        		if(s[i + 1] == '1' and s[i + k] == '1'){
-
-        			dp[i + 1] = min(dp[i + 1], dp[i] + y);
-        			dp[i + k] = min(dp[i + k], dp[i]);
-        		}
-        		else if(s[i + 1] == '0' and s[i + k] == '1'){
-
-        			dp[i + k] = min(dp[i + k], dp[i]);
-        		}
-        		else if(s[i + 1] == '1' and s[i + k] == '0'){
-
-        			dp[i + 1] = min(dp[i + 1], dp[i] + y);
-        			dp[i + k] = min(dp[i + k], dp[i] + x);
-        		}
-        		else{
-
-        			dp[i + k] = min(dp[i + k], dp[i] + x);
-        		}
-
-        	}
-        	else if(i + 1 < n){
-
-        		if(s[i + 1] == '1') dp[i + 1] = min(dp[i + 1], dp[i] + y);
-        	}
-        	else break;
-
+            dp[i] = dp[i + k];
+            if(s[i] == '0') dp[i]++;
         }
 
-        for(int i = 0; i <= n; i++){
+        ll ans = INT_MAX;
+        
+        for(int i = p; i < n; i++){
 
-        	cout << dp[i] << " ";
-        }
-
-        ll ans = INF;
-        for(int i = n - 1; i >= n - k ; i--){
-
-        	ans = min(ans, dp[i]);
+            ans = min(ans, (y * (i - p)) + (x * dp[i]));
         }
 
         cout << ans << endl;
-        // ll ans = 0;
-
-        // int i = 0;
-        // int canRemove = n;
-        // if(s[p - 1] == '1') i = p - 1;
-        // else{
-
-        // 	if(p < n and s[p] == '0'){
-
-        // 		ans += x;
-        // 		i = p - 1;
-        // 	}
-        // 	else if(p < n and s[p] == '1'){
-
-        // 		ans += y;
-        // 		i = p;
-        // 		canRemove -= 1;
-        // 	}
-        // }
-
-        // for(int j = i; j < n; j++){
-
-        // 	if(j + k < n and s[j + k] == '1'){
-
-        // 		j = j + k - 1;
-        // 		continue;
-        // 	}
-
-        // 	if(j + k < n and s[j + k] == '0'){
-
-        // 		if(s[j + 1] == '1' and y < x){
-
-
-        // 		}
-        // 	}
-        // }
     }
     return 0;
 }

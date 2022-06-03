@@ -61,113 +61,27 @@ int main(){
         rep(i,n){
 
         	cin >> v[i];
-        	m[v[i]]++;
+            
         }
 
-        if((int)m.size() == n){
+        ll ans = INF;
 
-        	cout << 0 << endl;
-        	continue;
+        int r = 0;
+        for(int l = 0; l < n; l++){
+
+            while(r < n and m[v[r]] == 0){
+
+                m[v[r]]++;
+                r++;
+            }
+
+            ans = min(ans, 2 * l + n - r);
+            ans = min(ans, 2 * (n - r) + l);
+
+            m[v[l]]--;
         }
-
-        set<ll> st;
-        for(auto it : m){
-
-        	if(it.second > 1) st.insert(it.first);
-        }
-
-        vector<ll> left(n), right(n);
-
-        auto st1 = st;
-        // left
-        ll ans1 = 0;
-        auto m1 = m;
-        int i = 0;
-
-        while(st1.size() > 0 and i < n){
-
-        	//db2(v[i], m1[v[i]]);
-        	if(m1[v[i]] == 1){
-
-        		if(st1.find(v[i]) != st1.end()) st1.erase(v[i]);
-        		if(st1.size() == 0) break;
-        		if(st1.size() > 0) ans1 += 1;
-        		left[i] = ans1;
-        		m1[v[i]]--;
-        	}
-        	else if(m1[v[i]] > 1){
-
-        		ans1 += 1;
-        		left[i] = ans1;
-        		m1[v[i]]--;
-
-        		if(m1[v[i]] == 1){
-
-        			if(st1.find(v[i]) != st1.end()) st1.erase(v[i]);
-        			if(st1.size() == 0) break;
-        		}
-        	}
-
-        	
-        	if(st1.size() == 0) break;
-        	i++;
-        }
-
-        db1(ans1);
-
-        //right
-        m1 = m;
-        st1 = st;
-        ll ans2 = 0;
-        i = n - 1;
-
-        while(st1.size() > 0 and i >= 0){
-
-        	if(m1[v[i]] == 1){
-
-        		if(st1.find(v[i]) != st1.end()) st1.erase(v[i]);
-        		if(st1.size() == 0) break;
-        		if(st1.size() > 0) ans2 += 1;
-        		right[i] = ans2;
-        		m1[v[i]]--;
-        	}
-        	else if(m1[v[i]] > 1){
-
-        		ans2 += 1;
-        		m1[v[i]]--;
-        		right[i] = ans2;
-        		if(m1[v[i]] == 1){
-
-        			if(st1.find(v[i]) != st1.end()) st1.erase(v[i]);
-        			if(st1.size() == 0) break;
-        		}
-        	}
-
-        	if(st1.size() == 0) break;
-        	i--;
-        }
-
-        db1(ans2);
-
-
-        //left + right
-        m1 = m;
-        st1 = st;
-        ll ans3 = 0;
         
-        for(int leftt = 0; leftt < n; leftt++){
-
-        	cout << left[leftt] << " ";
-        }
-        cout << endl;
-
-        for(int leftt = 0; leftt < n; leftt++){
-
-        	cout << right[leftt] << " ";
-        }
-        cout << endl;
-
-
+        cout << ans << endl;
     }
     return 0;
 }

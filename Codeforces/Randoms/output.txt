@@ -1,4 +1,3 @@
-aaa
-agaa
-bnbbabb
-aapp
+1
+3
+2

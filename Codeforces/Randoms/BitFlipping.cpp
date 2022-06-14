@@ -43,30 +43,6 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-
-    ab -> ba
-    bc -> cb
-
-
-    a can be moved towards right provided there are all b's
-    c can be moved towards left provided there are all b's
-    b can be moved either ways
-
-
-    aaaaaaaaaaaaaaaaaaaaaaaaaab
-
-
-             b 
-
-    
-    characters : a, b, c
-    
-    1st character is a
-
-
-
-*/
 
 
 int main(){
@@ -77,58 +53,76 @@ int main(){
     cin>>t;
     while(t--){
         
-        ll n;
-        cin >> n;
+        ll n, k; string s;
+        cin >> n >> k >> s;
 
-        string s, p;
-        cin >> s >> p;
-     
-        deque<int> pos[3];
+        vector<ll> ans(n);
+        int flag = 0;
 
-        for(int i = 0; i < n; i++){
+        int i = 0;
+        for(i = 0; i < n and k; i++){
 
-            pos[s[i] - 'a'].push_back(i);
+        	int curr = (s[i] - '0') ^ flag;
+            //db3(k, i, curr);
+
+
+        	if(curr == 1){
+
+        		if(k & 1){
+
+        			k--;
+        			flag ^= 1;
+        			ans[i]++;
+        			s[i] = '1';
+ 				
+        		}
+        		else{
+
+        			s[i] = '1';
+        		}
+        	}
+        	else{
+
+
+        		if(k & 1){
+
+        			s[i] = '1';
+        		}
+        		else{
+
+        			k--;
+        			flag ^= 1;
+        			ans[i]++;
+        			s[i] = '1';
+        		}
+        	}
         }
 
-        bool okay = true;
-        
-        for(int i = 0; i < n; i++){
+        if(k > 0){
+            if(k & 1){
 
-            if(p[i] == 'a'){
-
-                if(pos[0].empty() or (!pos[1].empty() and pos[0].front() > pos[1].front()) or (!pos[2].empty() and pos[0].front() > pos[2].front())){
-
-                    okay  = false;
-                    break;
-                }
-                pos[0].pop_front();
-            }   
-            else if(p[i] == 'b'){
-
-                if(pos[1].empty() or (!pos[2].empty() and pos[2].front() < pos[1].front())){
-
-                    okay = false;
-                    break;
-                }
-                pos[1].pop_front();
-            } 
-            else{
-
-                if(pos[2].empty() or (!pos[0].empty() and pos[0].front() < pos[2].front())){
-
-                    okay = false;
-                    break;
-                }
-
-                pos[2].pop_front();
-
+            	int curr = (s[n - 1] - '0');
+            	++ans.back();
+            	k--;
+                if(curr) s[n - 1] = '0';
+                else s[n - 1] = '1';
             }
 
+            ans[n - 1] += k;
+        }
+        else{
+
+            while(i < n){
+
+                s[i] = (((s[i] - '0') ^ flag) + '0');
+                i++;
+            }
         }
 
+        cout << s << endl;
+        for(auto it : ans) cout << it << " ";
+        cout << endl;
 
-        cout << (okay ? "YES\n" : "NO\n");
-       
     }
     return 0;
 }

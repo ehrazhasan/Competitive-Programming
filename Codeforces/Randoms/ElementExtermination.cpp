@@ -18,17 +18,18 @@ typedef long double ld;
 #define gcd(a,b) __gcd(a,b)
 #define tolowecase(s1) transform(s1.begin(),s1.end(),s1.begin(), ::tolower)
 #define touppercase(s1) transform(s1.begin(),s1.end(),s1.begin(), ::toupper)
-#define MOD1 = 998244353;
-double eps = 1e-12;
+#define MOD1 998244353
+#define eps 1e-12
 #define INF 2e18
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 #define PI 3.141592653589793238462
 #define total_set_bits __builtin_popcountll
+#define endl '\n'
 
 
 ll expo(ll a, ll b, ll mod) {ll res = 1; while (b > 0) {if (b & 1)res = (res * a) % mod; a = (a * a) % mod; b = b >> 1;} return res;}
-void extendgcd(ll a, ll b, ll*v) {if (b == 0) {v[0] = 1; v[1] = 0; v[2] = a; return ;} extendgcd(b, a % b, v); ll x = v[1]; v[1] = v[0] - v[1] * (a / b); v[0] = x; return;} //pass an arry of size1 3
+void extendgcd(ll a, ll b, ll*v) {if (b == 0) {v[0] = 1; v[1] = 0; v[2] = a; return ;} extendgcd(b, a % b, v); ll x = v[1]; v[1] = v[0] - v[1] * (a / b); v[0] = x; return;} //pass an arry of size1 3 // return x, y, gcd
 ll mminv(ll a, ll b) {ll arr[3]; extendgcd(a, b, arr); return arr[0];} //for non prime b
 ll mminvprime(ll a, ll b) {return expo(a, b - 2, b);}
 ll combination(ll n, ll r, ll m, ll *fact, ll *ifact) {ll val1 = fact[n]; ll val2 = ifact[n - r]; ll val3 = ifact[r]; return (((val1 * val2) % m) * val3) % m;}
@@ -39,115 +40,54 @@ ll mod_mul(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a * b) % m) + m) %
 ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) % m;}
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
-/*vector<ll> prime(10000000, 1);
-vector<ll> ans(10000000, 0);
-void isPrime()
-{
-
-    ll c = 0;
-    for (ll p = 2; p * p <= 10000000; p++)
-
-        if (prime[p] == 1)
-
-            for (ll i = p * 2; i <= 10000000; i += p)
-            {
-                prime[i] = 0;
-            }
-
-    for (ll p = 2; p <= 10000000; p++)
-    {
-        ans[p] = ans[p - 1] + prime[p];
-    }
-}
-*/                    
+    
                 /*******************************************************************************/
 
-struct TreeNode{
-
-    int val;
-    TreeNode* left;
-    TreeNode* right;
-
-    TreeNode(){};
-
-    TreeNode(int val){
-
-        this->val = val;
-        left = NULL;
-        right = NULL;
-    }
-};
+/*
 
 
-map<TreeNode*, int> dp, camera;
-    
-long long dfs(TreeNode* root, TreeNode* parent){
-    
-    if(!root) return 0;
-    
-    if(dp[root] > 0) return dp[root];
-    
-    long long install = INT_MAX;
-    long long notInstall = INT_MAX;
-    
-    db2(root->val, camera[parent]);
-    
-    if(!camera[parent]){
+	ai < ai+1
 
-        camera[root] = 1;
-        long long left = dfs(root->left, root);
-        long long right = dfs(root->right, root);
+	then I can either remove ai or I can remove ai+1
 
-        install = min(install, left + right + 1);
-    }
-    else{
+	Can I make the length equal to 1?
 
-        long long left = dfs(root->left, root);
-        long long right = dfs(root->right, root);
+	ai > ai+1 ? 
 
-        notInstall = min(notInstall, left + right);
-    }
-    
-    //db3(root->val, install, notInstall);
-    
-    long long ans = min(install, notInstall);
-    
-    return dp[root] = ans;
-     
-}
+	
+	1 < 2 < 3 < 4 < 8 > 5
+	6 < 7 < 8 > 5
 
-int minCameraCover(TreeNode* root) {
- 
-    if(!root) return 0;
-    dp.clear();
-    camera.clear();
-    
-    int ans1 = dfs(root, NULL);    
-    dp.clear();
-    camera.clear();
-    camera[NULL] = 1;  
-    int ans2 = dfs(root, NULL);
-    cout << ans1 << " " << ans2 << endl;
-    //return ans1;
-    return min(ans1, ans2);
-}
+
+	8 > 5 < 6 < 7 < 9
+	8 > 5 < 6 < 7
+
+
+	1 < 2 < 3 < 4 < 8 > 5 < 6 < 7 < 9
+
+
+	1 < 2 < 3 < 8 > 4 < 10 < 12 > 6
+
+
+
+*/
+
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    //cin>>t;
+    int t;
+    cin>>t;
     while(t--){
-        
-        TreeNode* node1 = new TreeNode(1);
-        // TreeNode* node2 = new TreeNode(2);
-        // TreeNode* node3 = new TreeNode(3);
+     	
+     	ll n;
+     	cin >> n;
 
-        // node1->left = node2;
-        // node2->right = node3;
+     	vector<ll> v(n);
+     	rep(i,n) cin >> v[i];
 
-        cout << minCameraCover(node1);
+     	cout << (v[0] < v[n - 1] ? "YES\n" : "NO\n");
 
     }
     return 0;

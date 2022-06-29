@@ -43,12 +43,20 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-vector<int> p;
-void query(int l, int r){
+vector<int>  query(int l, int r){
 
 	cout << "? " << l << " " << r << endl;
 	cout.flush();
 
+	vector<int> p;
+	repA(i, 1, r - l + 1){
+
+		int a;
+		cin >> a;
+		p.push_back(a);
+	}
+
+	return p;
 }
 
 int main(){
@@ -59,40 +67,35 @@ int main(){
     cin>>t;
     while(t--){
         
-        ll n;
+        int n;
         cin >> n;
 
-        vector<int> v(n);
-        iota(all(v), 1);
+        int start = 1;
+        int end = n;
 
-        query(1, n);
+        while(start <= end){
 
-        for(int i = 0; i < n; i++){
+        	if(start == end) break;
+        	int mid = (end - start) / 2 + start;
+        	vector<int> a = query(start, mid);
 
-       		int a;
-       		cin >> a;
+        	int cnt = 0;
+        	for(auto it : a){
 
-       		if(a == -1){
+        		if(it >= start and it <= mid) cnt++;
+        	}
 
-				cout.flush();
-       			return -1;
-       		}
-       		if(i == 0 and a == n){
+        	if(cnt % 2){
 
-       			cout.flush();
-       			return -1;
-       		} 	
+        		end = mid;
+        	}
+        	else{
 
-       		p.push_back(a);
+        		start = mid + 1;
+        	}
         }
 
-        int ans = 0;
-        for(int i = 0; i < p.size(); i++){
-
-        	if(v[i] == p[i]) ans = i + 1;
-        }
-
-        cout << "! " << ans << endl;
+        cout << "! " << end << endl;
         cout.flush();
 
     }

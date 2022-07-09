@@ -18,17 +18,18 @@ typedef long double ld;
 #define gcd(a,b) __gcd(a,b)
 #define tolowecase(s1) transform(s1.begin(),s1.end(),s1.begin(), ::tolower)
 #define touppercase(s1) transform(s1.begin(),s1.end(),s1.begin(), ::toupper)
-#define MOD1 = 998244353;
-double eps = 1e-12;
+#define MOD1 998244353
+#define eps 1e-12
 #define INF 2e18
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 #define PI 3.141592653589793238462
 #define total_set_bits __builtin_popcountll
+#define endl '\n'
 
 
 ll expo(ll a, ll b, ll mod) {ll res = 1; while (b > 0) {if (b & 1)res = (res * a) % mod; a = (a * a) % mod; b = b >> 1;} return res;}
-void extendgcd(ll a, ll b, ll*v) {if (b == 0) {v[0] = 1; v[1] = 0; v[2] = a; return ;} extendgcd(b, a % b, v); ll x = v[1]; v[1] = v[0] - v[1] * (a / b); v[0] = x; return;} //pass an arry of size1 3
+void extendgcd(ll a, ll b, ll*v) {if (b == 0) {v[0] = 1; v[1] = 0; v[2] = a; return ;} extendgcd(b, a % b, v); ll x = v[1]; v[1] = v[0] - v[1] * (a / b); v[0] = x; return;} //pass an arry of size1 3 // return x, y, gcd
 ll mminv(ll a, ll b) {ll arr[3]; extendgcd(a, b, arr); return arr[0];} //for non prime b
 ll mminvprime(ll a, ll b) {return expo(a, b - 2, b);}
 ll combination(ll n, ll r, ll m, ll *fact, ll *ifact) {ll val1 = fact[n]; ll val2 = ifact[n - r]; ll val3 = ifact[r]; return (((val1 * val2) % m) * val3) % m;}
@@ -39,76 +40,24 @@ ll mod_mul(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a * b) % m) + m) %
 ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) % m;}
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
-/*vector<ll> prime(10000000, 1);
-vector<ll> ans(10000000, 0);
-void isPrime()
-{
-
-    ll c = 0;
-    for (ll p = 2; p * p <= 10000000; p++)
-
-        if (prime[p] == 1)
-
-            for (ll i = p * 2; i <= 10000000; i += p)
-            {
-                prime[i] = 0;
-            }
-
-    for (ll p = 2; p <= 10000000; p++)
-    {
-        ans[p] = ans[p - 1] + prime[p];
-    }
-}
-*/                    
+    
                 /*******************************************************************************/
 
-bool solve(int i, int j, int p1, int p2, int turn, vector<int> &nums){
-    
-    db1(turn); 
-    db2(i, j);
-    db2(p1, p2);   
-    if(i > j){
-        
-        return p1 < p2;
-    }
 
-    bool left, right;
-
-    if(!turn){
-        
-        left = solve(i + 1, j, p1 + nums[i], p2, turn ^ 1, nums);
-        if(left) return true;
-        right = solve(i, j - 1, p1 + nums[j], p2, turn ^ 1, nums);
-        if(right) return true;
-    }
-    else{
-        
-        left = solve(i + 1, j, p1, p2 + nums[i], turn ^ 1, nums);
-        if(left) return true;
-        right = solve(i, j - 1, p1, p2 + nums[j], turn ^ 1, nums);
-        if(right) return true;
-    }
-
-
-    return false;
-}
-
-bool PredictTheWinner(vector<int>& nums) {
-
-    if((int)nums.size() < 2) return true;
-    return solve(0, nums.size() - 1, 0, 0, 0, nums);
-}
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    //cin>>t;
+    int t;
+    cin>>t;
     while(t--){
         
-        vector<int> nums = {1, 5, 233, 7};
-        cout << PredictTheWinner(nums);
+        ll n;
+        cin >> n;
+
+        if(n % 2) cout << -1 << endl;
+        else cout << 0 << " " << n / 2 << " " << 0 << endl;
     }
     return 0;
 }

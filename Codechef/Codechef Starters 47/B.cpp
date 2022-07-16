@@ -56,144 +56,35 @@ int main(){
         ll n;
         cin >> n;
 
-        vector<vector<char>> v(n, vector<char>(n));
+        vector<ll> v(n);
+        map<ll, ll> freq;
+        rep(i, n){
 
-        rep(i,n){
-
-        	rep(j,n){
-
-        		cin >> v[i][j];
-        	}
+        	cin >> v[i];
+        	freq[v[i]]++;
         }
 
+        ll cnt = 0;
+        ll mn = 0;
 
-        ll ans = 0;
-        if(n % 2){
+        for(auto it : freq){
 
-
-        	for(int i = 0; i < n / 2; i++){
-
-        		int ones = 0, zeros = 0;
-
-        		// db2(n / 2, i);
-	        	// db2(n - i - 1, n / 2);
-	        	// db2(n / 2, n - i - 1);
-	        	// db2(i, n / 2);
-
-        		int a = v[n / 2][i] - '0';
-        		int b = v[n - i - 1][n / 2] - '0';
-        		int c = v[n / 2][n - i - 1] - '0';
-        		int d = v[i][n / 2] - '0';
-
-        		if(a == 1) ones++;
-	        	else zeros++;
-
-	        	if(b == 1) ones++;
-	        	else zeros++;
-
-	        	if(c == 1) ones++;
-	        	else zeros++;
-
-	        	if(d == 1) ones++;
-	        	else zeros++;
-
-	        	//db3(n, ones, zeros);
-	        	
-	        	ans += min(zeros, ones);
-        	}
+        	ll a = it.first;
+        	if(freq[a] == 1LL) cnt++;
+        	else if(freq[a] > 1) mn = max(freq[a], mn);
         }
 
-        //db1(ans);
-        // continue;
-        // db1(ans);
-        int j = 0;
+        ll mx = *max_element(all(v));
 
-        while(j < n / 2){
+        if(cnt == 1 and mn == 2 and freq[mx] == 1){
 
-        	int i = 0;
-	        while(i < n / 2){
+        	cout << mn << endl;
+        	continue;
+        }
 
-	        	int ones = 0;
-	        	int zeros = 0;
-	        		
-	        	
-	        	// db2(i, j);
-	        	// db2(i, n - j - 1);
-	        	// db2(n - i - 1, j);
-	        	// db2(n - i - 1, n - j - 1);
-
-	        	int a = v[i][j] - '0';
-	        	int b = v[j][n - i - 1] - '0';
-	        	int c = v[n - j - 1][i] - '0';
-	        	int d = v[n - i - 1][n - j - 1] - '0';
-
-
-	        	// if(n % 2 and i == n / 2){
-
-	        	// 	c = v[j][n - i - 1] - '0';
-	        	// 	d = v[n - j - 1][n - i - 1] - '0';
-	        	// }
-
-	        	// if(n % 2 and i == n / 2 and j == n / 2){
-
-	        	// 	i++;
-	        	// 	continue;
-	        	// }
-
-	        	if(a == 1) ones++;
-	        	else zeros++;
-
-	        	if(b == 1) ones++;
-	        	else zeros++;
-
-	        	if(c == 1) ones++;
-	        	else zeros++;
-
-	        	if(d == 1) ones++;
-	        	else zeros++;
-
-	        	//db2(ones, zeros);
-	        	
-	        	ans += min(zeros, ones);
-	        	i++;
-	        }
-
-	        j++;
-	    }
-
+        ll ans = (cnt + 1) / 2;
+        
         cout << ans << endl;
     }
     return 0;
 }
-
-
-const int N = 3e5 + 9;
-
-struct DSU {
-  vector<int> par, rnk, sze;
-  int c;
-  DSU(int n) : par(n + 1), rnk(n + 1, 0), sze(n + 1, 1), c(n) {
-    for (int i = 1; i <= n; ++i) par[i] = i;
-  }
-  int find(int i) {
-    return (par[i] == i ? i : (par[i] = find(par[i])));
-  }
-  bool same(int i, int j) {
-    return find(i) == find(j);
-  }
-  int get_size(int i) {
-    return sze[find(i)];
-  }
-  int count() {
-    return c;    //connected components
-  }
-  int merge(int i, int j) {
-    if ((i = find(i)) == (j = find(j))) return -1;
-    else --c;
-    if (rnk[i] > rnk[j]) swap(i, j);
-    par[i] = j;
-    sze[j] += sze[i];
-    if (rnk[i] == rnk[j]) rnk[j]++;
-    return j;
-  }
-};

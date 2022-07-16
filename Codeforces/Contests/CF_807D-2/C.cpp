@@ -53,147 +53,76 @@ int main(){
     cin>>t;
     while(t--){
         
-        ll n;
-        cin >> n;
+        ll n, c, q;
+        cin >> n >> c >> q;
 
-        vector<vector<char>> v(n, vector<char>(n));
+        string s;
+        cin >> s;
 
-        rep(i,n){
+        ll cnt = n;
 
-        	rep(j,n){
+        vector<pair<ll,ll>> p;
+        vector<pair<ll,ll>> pp;
 
-        		cin >> v[i][j];
-        	}
+        while(c--){
+
+        	ll l, r;
+        	cin >> l >> r;
+        
+        	ll a = cnt + 1;
+        	ll b = a + r - l;
+        	cnt = b;
+        	p.push_back({a, b});
+        	pp.push_back({l, r});
         }
 
 
-        ll ans = 0;
-        if(n % 2){
+        while(q--){
 
+        	ll k;
+        	cin >> k;
+        	if(k <= n){
 
-        	for(int i = 0; i < n / 2; i++){
-
-        		int ones = 0, zeros = 0;
-
-        		// db2(n / 2, i);
-	        	// db2(n - i - 1, n / 2);
-	        	// db2(n / 2, n - i - 1);
-	        	// db2(i, n / 2);
-
-        		int a = v[n / 2][i] - '0';
-        		int b = v[n - i - 1][n / 2] - '0';
-        		int c = v[n / 2][n - i - 1] - '0';
-        		int d = v[i][n / 2] - '0';
-
-        		if(a == 1) ones++;
-	        	else zeros++;
-
-	        	if(b == 1) ones++;
-	        	else zeros++;
-
-	        	if(c == 1) ones++;
-	        	else zeros++;
-
-	        	if(d == 1) ones++;
-	        	else zeros++;
-
-	        	//db3(n, ones, zeros);
-	        	
-	        	ans += min(zeros, ones);
+        		cout << s[k - 1] << endl;
         	}
+        	else{
+
+        		
+        		int pos = -1;
+        		for(int i = 0; i < p.size(); i++){
+
+        			if(k >= p[i].first and k <= p[i].second){
+
+        				pos = i;
+        				break;
+        			}
+        		}
+
+        		ll gap = k - p[pos].first;
+                k = pp[pos].first + gap;
+
+                while(k > n){
+
+                    int newPos = -1;
+                    for(int i = pos; i >= 0; i--){
+
+                        if(k >= p[i].first and k <= p[i].second){
+
+                            newPos = i;
+                            break;
+                        }
+                    }
+
+                    ll gap = k - p[newPos].first;
+                    k = pp[newPos].first + gap;
+                }
+
+
+                cout << s[k - 1] << endl;
+        		//cout << temp[((l % r) - l + r) % r] << endl;
+        	}
+
         }
-
-        //db1(ans);
-        // continue;
-        // db1(ans);
-        int j = 0;
-
-        while(j < n / 2){
-
-        	int i = 0;
-	        while(i < n / 2){
-
-	        	int ones = 0;
-	        	int zeros = 0;
-	        		
-	        	
-	        	// db2(i, j);
-	        	// db2(i, n - j - 1);
-	        	// db2(n - i - 1, j);
-	        	// db2(n - i - 1, n - j - 1);
-
-	        	int a = v[i][j] - '0';
-	        	int b = v[j][n - i - 1] - '0';
-	        	int c = v[n - j - 1][i] - '0';
-	        	int d = v[n - i - 1][n - j - 1] - '0';
-
-
-	        	// if(n % 2 and i == n / 2){
-
-	        	// 	c = v[j][n - i - 1] - '0';
-	        	// 	d = v[n - j - 1][n - i - 1] - '0';
-	        	// }
-
-	        	// if(n % 2 and i == n / 2 and j == n / 2){
-
-	        	// 	i++;
-	        	// 	continue;
-	        	// }
-
-	        	if(a == 1) ones++;
-	        	else zeros++;
-
-	        	if(b == 1) ones++;
-	        	else zeros++;
-
-	        	if(c == 1) ones++;
-	        	else zeros++;
-
-	        	if(d == 1) ones++;
-	        	else zeros++;
-
-	        	//db2(ones, zeros);
-	        	
-	        	ans += min(zeros, ones);
-	        	i++;
-	        }
-
-	        j++;
-	    }
-
-        cout << ans << endl;
     }
     return 0;
 }
-
-
-const int N = 3e5 + 9;
-
-struct DSU {
-  vector<int> par, rnk, sze;
-  int c;
-  DSU(int n) : par(n + 1), rnk(n + 1, 0), sze(n + 1, 1), c(n) {
-    for (int i = 1; i <= n; ++i) par[i] = i;
-  }
-  int find(int i) {
-    return (par[i] == i ? i : (par[i] = find(par[i])));
-  }
-  bool same(int i, int j) {
-    return find(i) == find(j);
-  }
-  int get_size(int i) {
-    return sze[find(i)];
-  }
-  int count() {
-    return c;    //connected components
-  }
-  int merge(int i, int j) {
-    if ((i = find(i)) == (j = find(j))) return -1;
-    else --c;
-    if (rnk[i] > rnk[j]) swap(i, j);
-    par[i] = j;
-    sze[j] += sze[i];
-    if (rnk[i] == rnk[j]) rnk[j]++;
-    return j;
-  }
-};

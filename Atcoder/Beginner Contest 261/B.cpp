@@ -43,39 +43,42 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-
-    dp[i][j] = The number of ways to partition j characters into i substrings
-    
-    End with an odd number and start with an even number
-    -> k is valid endpoint of a segment if s[k] is odd and s[k + 1] is even
-
-
-    for the ith segment the first character will be j - m + 1 -> s[j - m + 1] has to be even
-    for the i-1 th segment the last character k -> s[k] should be odd
-
-    dp[i][j] = sum of dp[i - 1][all the valid k's]   1 <= k <= j - m
-
-    dp[i][j] = dp[i - 1][1] + dp[i - 1][2] +............+ dp[i - 1][j - m]
-    
-    pref[i][j] = sum of all the valid j's for the ith segment           
-    
-    dp[i][j] = pref[i - 1][j - m];
-*/
-
 
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin>>t;
+    int t = 1;
+    //cin>>t;
     while(t--){
-        
-        ll n;
-        cin >> n;
-        
+      	
+      	ll n;
+      	cin >> n;
+
+      	vector<vector<char>> v(n, vector<char>(n));
+
+      	rep(i, n){
+
+      		rep(j, n){
+
+      			cin >> v[i][j];
+      		}
+      	}  
+
+      	bool okay = true;
+      	rep(i, n){
+
+      		rep(j, n){
+
+      			if(i == j) continue;
+      			if(v[i][j] == 'W' and v[j][i] != 'L') okay = false;
+      			if(v[i][j] == 'L' and v[j][i] != 'W') okay = false;
+      			if(v[i][j] == 'D' and v[j][i] != 'D') okay = false;
+       		}
+      	}
+
+      	cout << (okay ? "correct" : "incorrect");
     }
     return 0;
 }

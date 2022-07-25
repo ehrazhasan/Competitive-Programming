@@ -43,26 +43,6 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-
-    dp[i][j] = The number of ways to partition j characters into i substrings
-    
-    End with an odd number and start with an even number
-    -> k is valid endpoint of a segment if s[k] is odd and s[k + 1] is even
-
-
-    for the ith segment the first character will be j - m + 1 -> s[j - m + 1] has to be even
-    for the i-1 th segment the last character k -> s[k] should be odd
-
-    dp[i][j] = sum of dp[i - 1][all the valid k's]   1 <= k <= j - m
-
-    dp[i][j] = dp[i - 1][1] + dp[i - 1][2] +............+ dp[i - 1][j - m]
-    
-    pref[i][j] = sum of all the valid j's for the ith segment           
-    
-    dp[i][j] = pref[i - 1][j - m];
-*/
-
 
 
 int main(){
@@ -73,9 +53,29 @@ int main(){
     cin>>t;
     while(t--){
         
-        ll n;
-        cin >> n;
+        ll n, q;
+        cin >> n >> q;
+
+        ll Q = 0;
+        vector<ll> v(n);
+        rep(i, n){
+        	cin >> v[i];
+        }
+
+        vector<int> ans(n);
         
+        for(int i = n - 1; i >= 0; i--){
+
+        	if(v[i] <= Q) ans[i] = 1;
+        	else if(Q < q) {
+        		Q++;
+        		ans[i] = 1;
+        	}
+        }
+
+        for(auto it : ans) cout << it;
+        cout << endl;
     }
     return 0;
 }
+

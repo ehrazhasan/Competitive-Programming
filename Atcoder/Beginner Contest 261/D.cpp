@@ -43,39 +43,61 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
+ll n, m;
+vector<ll> x;
+map<ll, ll> reward;
 
-    dp[i][j] = The number of ways to partition j characters into i substrings
-    
-    End with an odd number and start with an even number
-    -> k is valid endpoint of a segment if s[k] is odd and s[k + 1] is even
+ll dp[5005][5005][2];
+ll solve(int i, ll counter, int p){
 
+	if(i >= n) return dp[i][counter][p] = reward[counter];
 
-    for the ith segment the first character will be j - m + 1 -> s[j - m + 1] has to be even
-    for the i-1 th segment the last character k -> s[k] should be odd
+	
+	if(dp[i][counter][p] >= 0) return dp[i][counter][p];
 
-    dp[i][j] = sum of dp[i - 1][all the valid k's]   1 <= k <= j - m
+	ll ans = 0;
+	ll val = reward[counter];
+	if(p == 0){
 
-    dp[i][j] = dp[i - 1][1] + dp[i - 1][2] +............+ dp[i - 1][j - m]
-    
-    pref[i][j] = sum of all the valid j's for the ith segment           
-    
-    dp[i][j] = pref[i - 1][j - m];
-*/
+		ll a = val + x[i] + solve(i + 1, counter + 1, p);
+		ll b = val + x[i] + solve(i + 1, counter + 1, p ^ 1);
 
+		ans += max(a, b);
+	}
+	else{
 
+		ll a = val + solve(i + 1, 0, p);
+		ll b = val + solve(i + 1, 0, p ^ 1);
+
+		ans += max(a, b);
+	}
+
+	return dp[i][counter][p] = ans;
+}
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin>>t;
+    int t = 1;
+    //cin>>t;
     while(t--){
         
-        ll n;
-        cin >> n;
-        
+        cin >> n >> m;
+        x.resize(n, 0);
+        rep(i, n) cin >> x[i];
+        reward.clear();
+        rep(i, m){
+
+        	ll a, b;
+        	cin >> a >> b;
+        	reward[a] = b;
+        }
+        memset(dp, -1, sizeof dp);
+        ll ans1 = solve(0, 0, 0);
+        //memset(dp, -1, sizeof dp);
+        ll ans2 = solve(0, 0, 1);
+        cout << max(ans1, ans2);
     }
     return 0;
 }

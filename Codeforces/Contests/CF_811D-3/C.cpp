@@ -43,35 +43,55 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
+/*
 
+    Sum is given
+    find the minimum number such that all the digits are different and
+    digitSum = sum
+
+
+
+*/
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
+
     int t;
     cin>>t;
     while(t--){
+            
+        ll s;
+        cin >> s;
         
-        ll n, x;
-        cin >> n >> x;
+        if(s <= 9){
 
-        vector<ll> v(n);
-        rep(i, n){
-        	cin >> v[i];
+            cout << s << endl;
+            continue;
         }
-        sort(all(v));
 
-       	ll ans = 0;
+        vector<ll> v(9);
+        iota(all(v), 1);
 
-       	ll m = 0;
-       	for(ll p = n; p >= 1; p--){
+        vector<string> toPrint;
 
-       		ll start = m;
-       		ll end = 1e12;
+        sort(all(v), greater<ll>());
+        ll ans = 0;
 
-       		 
-       	}
+        for(int i = 0; i < v.size(); i++){
+
+            ll curr = v[i];
+            if(ans + curr <= s){
+
+                ans += curr;
+                toPrint.push_back(to_string(curr));
+            }
+        }
+
+        reverse(all(toPrint));
+        for(auto it : toPrint) cout << it;
+        cout << endl;
     }
     return 0;
 }

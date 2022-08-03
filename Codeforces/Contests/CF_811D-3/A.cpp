@@ -52,26 +52,40 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-        
-        ll n, x;
-        cin >> n >> x;
+        	
+        ll n, h, m;
+        cin >> n >> h >> m;
 
-        vector<ll> v(n);
+        vector<pair<ll,ll>> p(n);
         rep(i, n){
-        	cin >> v[i];
+
+        	ll hh, mm;
+        	cin >> hh >> mm;
+        
+            if(mm < m) hh -= 1;
+
+        	mm = ((mm - m) % 60 + 60 ) % 60;
+            hh = ((hh - h) % 24 + 24 ) % 24;
+
+            p[i] = {hh, mm}; 
         }
-        sort(all(v));
 
-       	ll ans = 0;
+        sort(all(p), [&](const pair<ll, ll> &a, const pair<ll,ll> &b){
 
-       	ll m = 0;
-       	for(ll p = n; p >= 1; p--){
+            if(a.first == b.first) return a.second < b.second;
+            return a.first < b.first;
+        });
 
-       		ll start = m;
-       		ll end = 1e12;
 
-       		 
-       	}
+        auto ans = p[0];
+
+        ll a = ans.first;
+        ll b = ans.second;
+
+        if(a == 24) a = 0;
+        if(b == 60) b = 0;
+
+        cout << a << " " << b << endl;
     }
     return 0;
 }

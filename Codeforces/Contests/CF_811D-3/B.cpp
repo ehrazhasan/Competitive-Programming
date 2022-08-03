@@ -53,25 +53,32 @@ int main(){
     cin>>t;
     while(t--){
         
-        ll n, x;
-        cin >> n >> x;
+        ll n;
+        cin >> n;
 
         vector<ll> v(n);
-        rep(i, n){
-        	cin >> v[i];
-        }
-        sort(all(v));
+        rep(i, n) cin >> v[i];
 
-       	ll ans = 0;
+        ll ans = 0;
 
-       	ll m = 0;
-       	for(ll p = n; p >= 1; p--){
+        set<ll> st;
+        for(int i = n - 1; i >= 0; i--){
 
-       		ll start = m;
-       		ll end = 1e12;
+            auto it = st.find(v[i]);
 
-       		 
-       	}
+            if(it == st.end()){
+
+                ans++;
+            }
+            else{
+
+                break;
+            }
+
+            st.insert(v[i]);
+        }        
+
+        cout << n - ans << endl;
     }
     return 0;
 }

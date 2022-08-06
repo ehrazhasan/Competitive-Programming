@@ -43,74 +43,34 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-    
-    sort according to increasing price
-    everyday budget is x
-    
-    1 2 2
 
-    for how many days I can buy p packs
-    
-    4th day
-
-    5 6 6
-
-    1 3 5
-
-*/
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin>>t;
+    int t = 1;
+    //cin>>t;
     while(t--){
-        
-        ll n, x;
-        cin >> n >> x;
+        	
+       ll n;
+       cin >> n;
+       ll ans = 0;
+       vector<ll> v(n + 1);
+       repA(i, 2, n){
 
-        vector<ll> v(n);
-        rep(i, n){
-        	cin >> v[i];
-        }
-        sort(all(v));
+       		cin >> v[i];
+       }
 
-        for(int i = 1; i < n; i++) v[i] += v[i - 1];
+       //for(auto it : v) cout << it << " ";
+       ll a = n;	
+       while(a != 1){
 
-       	ll ans = 0;
+       		ans++;
+       		a = v[a];
+       }
 
-        ll m = 0;
-       	for(ll p = n; p >= 1; p--){
-
-       		ll start = m;
-       		ll end = 1e12;
-            // Uptil which day i can buy p packs
-       		while(start <= end){
-
-                ll mid = (start + end) >> 1;
-
-                ll sum = v[p - 1];
-                sum += (mid * p);
-
-                if(sum <= x){
-
-                    start = mid + 1;
-                }
-                else{
-
-                    end = mid - 1;
-                }
-            }
-            
-            ans += (start - m) * p;
-            m = start;
-
-                
-       	}
-
-        cout << ans << endl;
+       cout << ans << endl;
     }
     return 0;
 }

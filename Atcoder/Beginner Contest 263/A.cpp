@@ -43,74 +43,34 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-    
-    sort according to increasing price
-    everyday budget is x
-    
-    1 2 2
 
-    for how many days I can buy p packs
-    
-    4th day
-
-    5 6 6
-
-    1 3 5
-
-*/
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin>>t;
+    int t = 1;
+    //cin>>t;
     while(t--){
-        
-        ll n, x;
-        cin >> n >> x;
+      	
+      	map<ll, ll> m;
+      	ll a, b, c, d, e;
+      	cin >> a >> b >> c >> d >> e;
 
-        vector<ll> v(n);
-        rep(i, n){
-        	cin >> v[i];
-        }
-        sort(all(v));
+      	m[a]++;
+      	m[b]++;
+      	m[c]++;
+      	m[d]++;
+      	m[e]++;
 
-        for(int i = 1; i < n; i++) v[i] += v[i - 1];
+      	bool hav3 = false, have2 = false;
+      	for(auto it : m){
 
-       	ll ans = 0;
+      		if(it.second == 3) hav3 = true;
+      		if(it.second == 2) have2 = true;
+      	}  
 
-        ll m = 0;
-       	for(ll p = n; p >= 1; p--){
-
-       		ll start = m;
-       		ll end = 1e12;
-            // Uptil which day i can buy p packs
-       		while(start <= end){
-
-                ll mid = (start + end) >> 1;
-
-                ll sum = v[p - 1];
-                sum += (mid * p);
-
-                if(sum <= x){
-
-                    start = mid + 1;
-                }
-                else{
-
-                    end = mid - 1;
-                }
-            }
-            
-            ans += (start - m) * p;
-            m = start;
-
-                
-       	}
-
-        cout << ans << endl;
+      	cout << (have2 & hav3 ? "Yes\n" : "No\n"); 
     }
     return 0;
 }

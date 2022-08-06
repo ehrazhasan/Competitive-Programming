@@ -43,22 +43,7 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-    
-    sort according to increasing price
-    everyday budget is x
-    
-    1 2 2
 
-    for how many days I can buy p packs
-    
-    4th day
-
-    5 6 6
-
-    1 3 5
-
-*/
 
 int main(){
     ios::sync_with_stdio(0);
@@ -68,49 +53,62 @@ int main(){
     cin>>t;
     while(t--){
         
-        ll n, x;
-        cin >> n >> x;
-
+        ll n;
+        cin >> n;
         vector<ll> v(n);
+        rep(i, n) cin >> v[i];
+
         rep(i, n){
-        	cin >> v[i];
+
+        	if(v[i] % 2) v[i] += (v[i] % 10);
         }
+
+        ll zeros = 0;
+        ll e = v[0];
+        bool okay = true;
+        rep(i, n){
+
+        	if(v[i] % 10 == 0) zeros++;
+        	if(v[i] != e) okay = false;
+        }
+
+        if(zeros > 0 and zeros < n){
+
+        	cout << "No\n";
+        	continue;
+        }
+
+        if(zeros == n){
+
+        	cout << (okay ? "Yes\n" : "No\n");
+        	continue;
+        }
+
+        rep(i, n){
+
+        	v[i] %= 20;
+        }
+
         sort(all(v));
+        v.erase(unique(all(v)), v.end());
+       		
+       	n = (int)v.size(); 
+       	okay = true;
+       	for(int i = 0; i < n - 1; i++){
 
-        for(int i = 1; i < n; i++) v[i] += v[i - 1];
+       		while(v[i] < v[n - 1]){
 
-       	ll ans = 0;
+       			v[i] += v[i] % 10;
+       		}
 
-        ll m = 0;
-       	for(ll p = n; p >= 1; p--){
+       		if(v[i] > v[n - 1]){
 
-       		ll start = m;
-       		ll end = 1e12;
-            // Uptil which day i can buy p packs
-       		while(start <= end){
-
-                ll mid = (start + end) >> 1;
-
-                ll sum = v[p - 1];
-                sum += (mid * p);
-
-                if(sum <= x){
-
-                    start = mid + 1;
-                }
-                else{
-
-                    end = mid - 1;
-                }
-            }
-            
-            ans += (start - m) * p;
-            m = start;
-
-                
+       			okay = false;
+       		}
        	}
 
-        cout << ans << endl;
+       	cout << (okay ? "Yes\n" : "No\n");
+
     }
     return 0;
 }

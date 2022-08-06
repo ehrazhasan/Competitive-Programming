@@ -43,22 +43,7 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-    
-    sort according to increasing price
-    everyday budget is x
-    
-    1 2 2
 
-    for how many days I can buy p packs
-    
-    4th day
-
-    5 6 6
-
-    1 3 5
-
-*/
 
 int main(){
     ios::sync_with_stdio(0);
@@ -67,50 +52,48 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-        
-        ll n, x;
-        cin >> n >> x;
+        	
+        ll n, m, k;
+        cin >> n >> m >> k;
 
-        vector<ll> v(n);
-        rep(i, n){
-        	cin >> v[i];
-        }
-        sort(all(v));
+        vector<ll> pigment(k);
+        rep(i, k) cin >> pigment[i];
 
-        for(int i = 1; i < n; i++) v[i] += v[i - 1];
+        sort(all(pigment), greater<ll>());
 
-       	ll ans = 0;
+        auto rowWise = [&]() -> bool {
 
-        ll m = 0;
-       	for(ll p = n; p >= 1; p--){
+        	ll column = 0;
+        	bool val = (m % 2 == 0 ? true : false);
 
-       		ll start = m;
-       		ll end = 1e12;
-            // Uptil which day i can buy p packs
-       		while(start <= end){
+        	for(int i = 0; i < k; i++){
 
-                ll mid = (start + end) >> 1;
+        		ll curr = pigment[i];
+        		if(curr / n >= 2) column += curr / n;
+        		if(curr / n >= 3) val = true;
+        	}
 
-                ll sum = v[p - 1];
-                sum += (mid * p);
+        	return column >= m and val;
+        };
 
-                if(sum <= x){
 
-                    start = mid + 1;
-                }
-                else{
+        auto colWise = [&]() -> bool {
 
-                    end = mid - 1;
-                }
-            }
-            
-            ans += (start - m) * p;
-            m = start;
+        	ll row = 0;
+        	bool val = (n % 2 == 0 ? true : false);
 
-                
-       	}
+        	for(int i = 0; i < k; i++){
 
-        cout << ans << endl;
+        		ll curr = pigment[i];
+        		if(curr / m >= 2) row += curr / m;
+        		if(curr / m >= 3) val = true;
+        	}
+
+        	return row >= n and val;
+        };
+
+
+        cout << ((rowWise() or colWise()) ? "Yes\n" : "No\n");
     }
     return 0;
 }

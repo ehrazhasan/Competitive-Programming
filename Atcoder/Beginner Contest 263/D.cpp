@@ -43,74 +43,39 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-    
-    sort according to increasing price
-    everyday budget is x
-    
-    1 2 2
 
-    for how many days I can buy p packs
-    
-    4th day
-
-    5 6 6
-
-    1 3 5
-
-*/
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin>>t;
+    int t = 1;
+    //cin>>t;
     while(t--){
-        
-        ll n, x;
-        cin >> n >> x;
+      	
+      	ll n, l, r;
+      	cin >> n >> l >> r;
 
-        vector<ll> v(n);
-        rep(i, n){
-        	cin >> v[i];
-        }
-        sort(all(v));
+      	vector<ll> a(n);
+      	rep(i, n) cin >> a[i];
 
-        for(int i = 1; i < n; i++) v[i] += v[i - 1];
+      	ll ans = INF;
 
-       	ll ans = 0;
+      	vector<ll> dp(n + 1);
 
-        ll m = 0;
-       	for(ll p = n; p >= 1; p--){
+      	for(int i = n - 1; i >= 0; i--){
 
-       		ll start = m;
-       		ll end = 1e12;
-            // Uptil which day i can buy p packs
-       		while(start <= end){
+      		dp[i] = min(dp[i + 1] + a[i], (n - i) * r);
+      	}
 
-                ll mid = (start + end) >> 1;
+      	ans = min(ans, dp[0]);
 
-                ll sum = v[p - 1];
-                sum += (mid * p);
+      	for(int i = 0; i < n; i++){
 
-                if(sum <= x){
+      		ans = min(ans, dp[i + 1] + l * (i + 1));
+      	}
 
-                    start = mid + 1;
-                }
-                else{
-
-                    end = mid - 1;
-                }
-            }
-            
-            ans += (start - m) * p;
-            m = start;
-
-                
-       	}
-
-        cout << ans << endl;
+      	cout << ans << endl;
     }
     return 0;
 }

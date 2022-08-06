@@ -44,21 +44,31 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
                 /*******************************************************************************/
 
 /*
-    
-    sort according to increasing price
-    everyday budget is x
-    
-    1 2 2
+	
+	For a second, we can infect a node
+	For the same second, all the infected node spreads the infection by 1
+	
+	3 2 0 1
 
-    for how many days I can buy p packs
-    
-    4th day
+	2 2 0 1
+	1 1 0 1
+	0 0 0 0
 
-    5 6 6
 
-    1 3 5
+	1 0 0 1 2
+	2 1 1 0 0
 
-*/
+	1 1 1 0 0
+	0 0 1 0 0
+	0 0 0 0 0
+
+
+	5
+
+	4
+	2
+	0
+*/	
 
 int main(){
     ios::sync_with_stdio(0);
@@ -68,47 +78,61 @@ int main(){
     cin>>t;
     while(t--){
         
-        ll n, x;
-        cin >> n >> x;
+        ll n;
+        cin >> n;
 
-        vector<ll> v(n);
-        rep(i, n){
-        	cin >> v[i];
+        vector<int> p(n);
+        map<int,int> m;
+        rep(i, n - 1){
+
+        	cin >> p[i];
+        	m[p[i]]++;
         }
-        sort(all(v));
 
-        for(int i = 1; i < n; i++) v[i] += v[i - 1];
+        multiset<int, greater<int>> st1, st2;
+        for(auto it : m) st1.insert(it.second);
+        st1.insert(1);
 
-       	ll ans = 0;
+        ll ans = 0;
 
-        ll m = 0;
-       	for(ll p = n; p >= 1; p--){
+        while(!st1.empty() or !st2.empty()){
 
-       		ll start = m;
-       		ll end = 1e12;
-            // Uptil which day i can buy p packs
-       		while(start <= end){
+        	if(!st2.empty()){
 
-                ll mid = (start + end) >> 1;
+        		multiset<int, greater<int>> st3;
+        		while(!st2.empty()){
 
-                ll sum = v[p - 1];
-                sum += (mid * p);
+        			int val = *st2.begin() - 1;
+        			
+        			if(val)
+        				st3.insert(val);
+        			st2.erase(st2.begin());
+        		}
 
-                if(sum <= x){
+        		st2 = st3;
+        	}
 
-                    start = mid + 1;
-                }
-                else{
 
-                    end = mid - 1;
-                }
-            }
-            
-            ans += (start - m) * p;
-            m = start;
+        	if(!st1.empty()){
 
-                
-       	}
+        		int val = *st1.begin();
+        		
+        		val--;
+        		if(val) st2.insert(val);
+        		st1.erase(st1.begin());
+        	}
+        	else if(!st2.empty()){
+
+        		int val = *st2.begin();
+        		
+        		st2.erase(st2.begin());
+        		val--;
+        		if(val) st2.insert(val);
+        		
+        	}
+
+        	ans++;
+        }
 
         cout << ans << endl;
     }

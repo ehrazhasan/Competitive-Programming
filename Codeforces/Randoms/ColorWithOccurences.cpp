@@ -43,22 +43,7 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-    
-    sort according to increasing price
-    everyday budget is x
-    
-    1 2 2
 
-    for how many days I can buy p packs
-    
-    4th day
-
-    5 6 6
-
-    1 3 5
-
-*/
 
 int main(){
     ios::sync_with_stdio(0);
@@ -68,49 +53,107 @@ int main(){
     cin>>t;
     while(t--){
         
-        ll n, x;
-        cin >> n >> x;
+        string s;
+        cin >> s;
+        cin.ignore();
 
-        vector<ll> v(n);
+        ll n;
+        cin >> n;
+
+        vector<pair<int, string>> v(n);
         rep(i, n){
-        	cin >> v[i];
+        	string x;
+        	cin >> x;
+        	v[i] = {i + 1, x};
         }
-        sort(all(v));
 
-        for(int i = 1; i < n; i++) v[i] += v[i - 1];
 
-       	ll ans = 0;
+        ll moves = 0;
+       	vector<pair<ll,ll>> ans;
+       	int len = s.length();
+       	vector<bool> visited(len, false);
 
-        ll m = 0;
-       	for(ll p = n; p >= 1; p--){
+       		
+       	sort(all(v), [&](const pair<int, string> &a, const pair<int, string> &b){
 
-       		ll start = m;
-       		ll end = 1e12;
-            // Uptil which day i can buy p packs
-       		while(start <= end){
+       		return a.second.length() > b.second.length();
+       	});
 
-                ll mid = (start + end) >> 1;
 
-                ll sum = v[p - 1];
-                sum += (mid * p);
+       	int prev = 0;
+       	int curr = 0;
 
-                if(sum <= x){
+       	while(curr < len){
 
-                    start = mid + 1;
-                }
-                else{
+       		int m = 0;
+       		string p = "";
+       		int ind = prev;
+       		int index = -1;
+       		while(prev <= curr){
 
-                    end = mid - 1;
-                }
-            }
-            
-            ans += (start - m) * p;
-            m = start;
+       			//db2(prev, curr);
+	       		for(int i = 0; i < v.size(); i++){
 
-                
+	       			string c = v[i].second;
+	       			int sz = c.length();
+	       			int cnt = 0;
+	       			//db1(c);
+
+	       			if(prev + sz - 1 < len and s.substr(prev, sz) == c){
+
+	       				for(int k = prev; k < prev + sz; k++){
+
+	       					if(!visited[k]){
+
+	       						cnt++;
+	       					}
+	       				}
+	       			}
+
+	       			//db1(cnt);
+	       			if(cnt > m){
+
+	       				m = cnt;
+	       				p = c;
+	       				ind = prev;
+	       				index = v[i].first;
+	       			}
+	       		}
+
+	       		prev++;
+	       	}
+
+	       	// db2(m, p);
+	       	// db2(ind, index);
+	       	if(m == 0 and accumulate(all(visited), 0) < len){
+	       		break;
+	       	}
+
+
+	       	//if(ind + p.length() >= len) break;
+
+	       	curr = ind + p.length();
+	       	prev = curr - p.length() + 1;
+	       	// db2(ind, ind + p.length());
+	       	// db2(prev, curr);
+	       	moves++;
+	       	for(int k = ind; k < ind + p.length(); k++) visited[k] = true;
+	       	ans.push_back({index, ind + 1});
+	       	
        	}
 
-        cout << ans << endl;
+       	ll sum = accumulate(all(visited), 0);
+
+       	if(sum != len){
+
+       		cout << -1 << endl;
+       		continue;
+       	}
+
+       	cout << moves << endl;
+       	for(auto it : ans){
+       		cout << it.first << " " << it.second << endl;
+       	}
     }
     return 0;
 }

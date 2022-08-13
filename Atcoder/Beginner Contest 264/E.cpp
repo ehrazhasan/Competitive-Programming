@@ -46,8 +46,8 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
 const int N = 3e5 + 9;
 
 struct DSU {
-  vector<int> par, rnk, sze;
-  int c;
+  vector<ll> par, rnk, sze;
+  ll c;
   DSU(int n) : par(n + 1), rnk(n + 1, 0), sze(n + 1, 1), c(n) {
     for (int i = 1; i <= n; ++i) par[i] = i;
   }
@@ -63,14 +63,13 @@ struct DSU {
   int count() {
     return c;    //connected components
   }
-  int merge(int i, int j) {
+  int merge(int i, int j, int n) {
     if ((i = find(i)) == (j = find(j))) return -1;
     else --c;
-    //if (rnk[i] > rnk[j]) swap(i, j);
-    if(i > j) swap(i, j);
+    if (i == n + 1) swap(i, j);
     par[i] = j;
-    // sze[j] += sze[i];
-    // if (rnk[i] == rnk[j]) rnk[j]++;
+    sze[j] += sze[i];
+    
     return j;
   }
 };
@@ -83,70 +82,66 @@ int main(){
     int t = 1;
     //cin>>t;
     while(t--){
+
        
-       	ll n, m, e;
-       	cin >> n >> m >> e;
+     	ll n, m, e;
+     	cin >> n >> m >> e;
 
 
-       	vector<pair<ll, ll>> p(e);	
-       	rep(i, e){
+     	vector<pair<ll, ll>> p(e);	
+     	rep(i, e){
 
-       		ll a, b;
-       		cin >> a >> b;
-       		p[i] = {a, b};
-       	}
+     		ll a, b;
+     		cin >> a >> b;
 
-       	ll q;
-       	cin >> q;
+        if(a > n) a = n + 1;
+        if(b > n) b = n + 1;
 
-       	map<ll, bool> restricted;
-       	vector<ll> rest(q);
-       	rep(i, q){
+     		p[i] = {a, b};
+     	}
 
-       		ll x;
-       		cin >> x;
-       		rest[i] = x;
-       		restricted[x] = true;
-       	}
+     
+      ll q;
+      cin >> q;
 
-       	DSU *d = new DSU(n + m + 1);
+      map<ll, bool> restricted;
+      vector<ll> queries(q);
+      rep(i, q){
 
-       	for(int i = 1; i <= e; i++){
+          ll x;
+          cin >> x;
+          restricted[x] = true;
+          queries[i] = x;
+      }
 
-       		if(!restricted[i]){
+      DSU *d = new DSU(n + 5);
 
-       			d->merge(p[i - 1].first, p[i - 1].second);
-       		}
-       	}
+      for(int i = 1; i <= e; i++){
 
-       	ll ans = 0;
-       	vector<bool> used(n + 1, false);
-       	for(int i = 1; i <= n; i++){
-       		
-       		if(d->find(i) >= n + 1 and !used[i]) {
-       			ans++;
-       			used[i] = true;
-       		}
-       	}
+          if(!restricted[i]){
 
+              ll a = p[i - 1].first;
+              ll b = p[i - 1].second;
 
+              d->merge(a, b, n);
+          }
+      }
 
-       	for(int i = q - 1; i >= 0; i--){
+      vector<ll> ans(q);
 
-       		cout << ans << endl;
-       		ll query = rest[i];
+      for(int i = q - 1; i >= 0; i--){
 
-       		ll a = p[query - 1].first;
-       		ll b = p[query - 1].second; 
-       		db2(a, b);
-       		d->merge(p[query - 1].first, p[query - 1].second);
+      
+          ans[i] = d->sze[n + 1] - 1;
 
-       		if(a > b) swap(a, b);
-       		if(a <= n and d->find(a) >= n + 1 and !used[a]) {
-       			ans++;
-       			used[a] = true;
-       		}
-       	}
+          ll a = p[queries[i] - 1].first;
+          ll b = p[queries[i] - 1].second;
+
+          d->merge(a, b, n);
+      }
+
+      for(auto it : ans) cout << it << endl;
+
     }
     return 0;
 }

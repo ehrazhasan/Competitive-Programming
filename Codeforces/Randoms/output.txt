@@ -1,6 +1,6 @@
-YES
-YES
-YES
-NO
-NO
-YES
+ab
+abbc
+b
+aa
+x
+ehinopx

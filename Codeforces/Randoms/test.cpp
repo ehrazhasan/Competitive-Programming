@@ -43,39 +43,260 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
+const int N = 1e5 + 5;
+ 
+// example: addition: identity element is 0
+ 
+struct Node
+{
+    ll value = 0, sum = 0, pref = 0, suff = 0, ans = 0;
 
-    dp[i][j] = The number of ways to partition j characters into i substrings
+    // use more variables if you want more information
+    // these default values should be identity_element
+    Node(){}
+    Node(ll val){
+        value = val;
+        sum = val;
+        pref = val;
+        suff = val;
+        ans = max(0LL, val);
+    }
+    void merge(const Node &l,const Node &r){ // store the thing you wanna query
+ 
+        sum = l.sum + r.sum;
+        pref = max(l.pref, l.sum + r.pref);
+        suff = max(r.suff, r.sum + l.suff);
+        ans = max({l.ans, r.ans, l.suff + r.pref});
+    }
+
+    bool check(ll x){
+
+        //write the condition for the true case
+        return false;
+    }
+};
+ 
+// example: add on a range: identity transformation = 0
+// old += new
+ 
+// if old is identity which is 0, then 0 + new which new
+ 
+struct Update
+{
+    ll v = 0; // 4
+    // use more variables if you want more information
+    // these default values should be identity_transformation
+    Update(){}
+    Update(ll val){
+        v = val; // 5
+    }
+    // combine the current Update with the other Update (see keynotes)
+    void combine(Update &other,const int32_t &tl,const int32_t &tr){
+        
+        v = other.v; // 6
+        // you can be sure that the "other" is newer than current
+ 
+    }
+    // store the correct information in the Node x
+    void apply(Node &x,const int32_t &tl,const int32_t &tr){
+
+        //How is entire range going to change
+        //x.sum = max(x.sum, x.sum + v); 
+        x.sum = v;
+        x.pref = v;
+        x.suff = v;
+        x.ans = max(0LL, v);
+    }
+};
+ 
+template<typename node,typename update>
+struct segtree
+{
+    int len;
+    vector<node> t;
+    vector<update> u;
+    vector<int> treeLeft, treeRight;
+    vector<bool> lazy;
+    node identity_element;
+    update identity_transformation;
+    segtree(int l){
+        len = l;
+        t.resize(4 * len);
+        u.resize(4 * len);
+        treeLeft.resize(4 * len);
+        treeRight.resize(4 * len);
+        lazy.resize(4 * len);
+        identity_element = node();
+        identity_transformation = update();
+    }
+ 
+    void pushdown(const int32_t &v){
+        if(!lazy[v]) return;
+        
+        apply(v<<1,u[v]);
+        apply(v<<1|1,u[v]);
+        u[v] = identity_transformation;
+        lazy[v] = 0;
+    }
+ 
+    void apply(const int32_t &v, update upd){
+        if(treeLeft[v] != treeRight[v]){
+            lazy[v] = 1;
+            u[v].combine(upd,treeLeft[v],treeRight[v]);
+        }
+        upd.apply(t[v],treeLeft[v],treeRight[v]);
+    }
+ 
+    template<typename T>
+    void build(const T &arr,const int32_t &v, const int32_t &tl, const int32_t &tr){
+
+        treeLeft[v] = tl;
+        treeRight[v] = tr;
+        if(tl == tr){
+            t[v] = arr[tl];
+            return;
+        }
+        int32_t tm = (tl + tr) >> 1;
+        build(arr,v<<1,tl,tm);
+        build(arr,v<<1|1,tm+1,tr);
+        t[v].merge(t[v<<1],t[v<<1|1]);
+    }
+ 
+    node query(const int32_t &v ,const int32_t &l,const int32_t &r){
+        if(l > treeRight[v] || r < treeLeft[v]){
+            return identity_element;
+        }
+        if(treeLeft[v] >= l && treeRight[v] <= r){
+            return t[v];
+        }
+        pushdown(v);
+        node a = query(v<<1,l,r),b = query(v<<1|1,l,r),ans;
+        ans.merge(a,b);
+        return ans;
+    }
+ 
+    // rupd = range update
+    void rupd(const int32_t &v, const int32_t &l,const int32_t &r,const update &upd){
+        if(l > treeRight[v] || r < treeLeft[v]){
+            return;
+        }
+        if(treeLeft[v] >= l && treeRight[v] <= r){
+            apply(v, upd);
+            return;
+        }
+        pushdown(v);
+        rupd(v<<1,l,r,upd);
+        rupd(v<<1|1,l,r,upd);
+        t[v].merge(t[v<<1],t[v<<1|1]);
+    }
+     
+    template<typename T>
+    int descent_right(int l, T x, int32_t v, node &prev) {
+        if (l > treeRight[v]) // node is completely out of range
+            return len;
+        if(l <= treeLeft[v]){ // node is completely in range
+            node cur;
+            cur.merge(prev,t[v]);
+            if (!cur.check(x)){ // go further right than this node
+                swap(prev,cur); // merging this node's contribution
+                return len;
+            }
+            if (treeLeft[v]==treeRight[v]) {
+                return treeRight[v];
+            }
+        }
+        pushdown(v);
+        int ans=descent_right(l, x, v*2, prev); // trying to find in left child
+        if(ans != len) return ans; // found in left child
+        return descent_right(l, x, v*2+1, prev); // finding in right child
+    }
+    template<typename T>
+    int descent_left(int r, T x, int32_t v, node &prev) {
+        if (r < treeLeft[v]) // node is completely out of range
+            return -1;
+        if(r >= treeRight[v]){ // node is completely in range
+            node cur;
+            cur.merge(t[v],prev);
+            if (!cur.check(x)){ // go further left than this node
+                swap(cur,prev); // merging this node's contribution
+                return -1;
+            }
+            if (treeLeft[v]==treeRight[v]) {
+                return treeLeft[v];
+            }
+        }
+        pushdown(v);
+        int ans=descent_left(r, x, v*2+1, prev); // trying to find in right child
+        if(ans != -1) return ans; // found in right child
+        return descent_left(r, x, v*2, prev); // finding in left child
+    }
+
+
+    public:
+    template<typename T>
+    void build(const T &arr){
+        build(arr,1,0,len-1);
+    }
+    node query(const int32_t &l,const int32_t &r){
+        return query(1,l,r);
+    }
+    void rupd(const int32_t &l,const int32_t &r,const update &upd){
+        rupd(1,l,r,upd);
+    }
+    template<typename T>
+    int descent_right(int l, T x){ // minimum r such that [l...r].check(x) == true, returns segtree.len if not found
+        node prev = identity_element;
+        return descent_right(l,x,1,prev);
+    }
+    template<typename T>
+    int descent_left(int r, T x){ // maximum l such that [l...r].check(x) == true, returns -1 if not found
+        node prev = identity_element;
+        return descent_left(r,x,1,prev);
+    }
+
+};
+
+
+// ll a[N];
+// segtree<Node, Update> sgt(n);
+// sgt.build(a);
+vector<long long> maximumSegmentSum(vector<int>& nums, vector<int>& removeQueries) {
     
-    End with an odd number and start with an even number
-    -> k is valid endpoint of a segment if s[k] is odd and s[k + 1] is even
+    int n = (int)nums.size();
+    segtree<Node, Update> sgt(n);
+    sgt.build(nums);        
 
+    vector<long long> ans(n, 0);
 
-    for the ith segment the first character will be j - m + 1 -> s[j - m + 1] has to be even
-    for the i-1 th segment the last character k -> s[k] should be odd
+    for(int i = 0; i < n; i++){
 
-    dp[i][j] = sum of dp[i - 1][all the valid k's]   1 <= k <= j - m
+        int it = removeQueries[i];
+        sgt.rupd(it, it, -INF);
+        ans[i] = sgt.query(0, n - 1).ans;
+    }
 
-    dp[i][j] = dp[i - 1][1] + dp[i - 1][2] +............+ dp[i - 1][j - m]
-    
-    pref[i][j] = sum of all the valid j's for the ith segment           
-    
-    dp[i][j] = pref[i - 1][j - m];
-*/
-
+    return ans;
+}
 
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin>>t;
+    int t = 1;
+    //cin>>t;
     while(t--){
         
-        ll n;
-        cin >> n;
-        
+          int n; cin >> n;
+
+          vector<int> nums(n);
+          rep(i, n) cin >> nums[i];
+
+          vector<int> removeQueries(n);
+          rep(i, n) cin >> removeQueries[i];
+
+          vector<ll> ans = maximumSegmentSum(nums, removeQueries);
+          for(auto it : ans) cout << it << " ";
     }
     return 0;
 }

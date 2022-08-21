@@ -25,6 +25,7 @@ typedef long double ld;
 #define sz(x) ((ll)(x).size())
 #define PI 3.141592653589793238462
 #define total_set_bits __builtin_popcountll
+#define endl '\n'
 
 
 ll expo(ll a, ll b, ll mod) {ll res = 1; while (b > 0) {if (b & 1)res = (res * a) % mod; a = (a * a) % mod; b = b >> 1;} return res;}
@@ -42,43 +43,178 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
+//Associative Property
+
+const int N = 2e5 + 5;
+ll tree[4 * N + 1];
+bool lazy[4 * N + 1]; // denotes whether the vertex is currently holding the unpropagated value
+ll lazyUpd[4 * N + 1]; // stores the values of the unpropagated vertex
+
+// vertex = 1, treeLeft = 0, treeRight = N - 1
+
+void build(int vertex, int treeLeft, int treeRight, vector<ll> &a){
+
+    if(treeLeft == treeRight){
+
+        tree[vertex] = a[treeRight];
+        return;
+    }
+
+    int mid = (treeLeft + treeRight) >> 1;
+
+    build(2 * vertex, treeLeft, mid, a);
+    build(2 * vertex + 1, mid + 1, treeRight, a);
+
+    tree[vertex] = tree[2 * vertex] + tree[2 * vertex + 1];
+}
+
+
+//this function is the process of telling the man to remember the value
+void apply(int vertex, int treeLeft, int treeRight, ll value){ 
+
+    int range = treeRight - treeLeft + 1;
+    tree[vertex] += value * range;
+
+    if(treeLeft != treeRight){
+        // we are not at the leaf vertex
+
+        lazy[vertex] = 1;
+        lazyUpd[vertex] += value;
+    } 
+}
+
+//propagating the unpropagated value to its children
+void pushdown(int vertex, int treeLeft, int treeRight){
+
+    if(lazy[vertex]){
+
+        lazy[vertex] = 0;
+
+        int mid = (treeLeft + treeRight) >> 1;
+
+        apply(2 * vertex, treeLeft, mid, lazyUpd[vertex]);
+        apply(2 * vertex + 1, mid + 1, treeRight, lazyUpd[vertex]);
+
+        lazyUpd[vertex] = 0;
+    }
+}
+
+void update(int vertex, int treeLeft, int treeRight, ll value, int index){
+
+    if(index == treeLeft and index == treeRight){
+        // I am at the correct index where the value has to be updated
+        // ask this vertex to remember it
+        apply(vertex, treeLeft, treeRight, value);
+        return;
+    }
+
+    //update index is out of range
+    if(treeLeft > index or treeRight < index){
+        return;
+    }
+
+    //Since we are moving down, the children needs to have correct information
+    pushdown(vertex, treeLeft, treeRight);
+
+    int mid = (treeLeft + treeRight) >> 1;
+    update(2 * vertex, treeLeft, mid, value, index);
+    update(2 * vertex + 1, mid + 1, treeRight, value, index);
+    tree[vertex] = tree[2 * vertex] + tree[2 * vertex + 1];
+}
+
+
+ll query(int vertex, int treeLeft, int treeRight, int qLeft, int qRight){
+
+    //Complete Overlap  
+    if(qLeft <= treeLeft and qRight >= treeRight){
+        return tree[vertex];
+    }
+
+    //No Overlap
+    if(qRight < treeLeft or qLeft > treeRight){
+        return 0;
+    }
+
+    //Partial Overlap
+
+    //Since we are moving down, the children needs to have correct information
+    pushdown(vertex, treeLeft, treeRight);
+
+    int mid = (treeLeft + treeRight) >> 1;
+    ll leftSum = query(2 * vertex, treeLeft, mid, qLeft, qRight);
+    ll rightSum = query(2 * vertex + 1, mid + 1, treeRight, qLeft, qRight);
+    return leftSum + rightSum;
+}
+
+int findKth(int vertex, int treeLeft, int treeRight, int k) {
+    if (k > tree[vertex])
+        return -1;
+    if (treeLeft == treeRight)
+        return treeLeft;
+
+    int mid = (treeLeft + treeRight) >> 1;
+
+    if (tree[2 * vertex] >= k)
+        return findKth(2 * vertex, treeLeft, mid, k);
+    else 
+        return findKth(2 * vertex + 1, mid + 1, treeRight, k - tree[2 * vertex]);
+}
+
+
+// ll a[N];
+// segtree<Node, Update> sgt(n);
+// sgt.build(a);
+vector<long long> maximumSegmentSum(vector<int>& nums, vector<int>& removeQueries) {
     
-    Before the match you can increase your armor as well as health
-    k coins
+    int n = (int)nums.size();
+    segtree<Node, Update> sgt(n);
+    sgt.build(nums);        
 
-    k -> health , armor
-            x     k - x 
+    vector<long long> ans(n, 0);
 
+    int l = 0;
+    int r = n - 1;
+    
+    for(int i = 0; i < n; i++){
 
-    x -> we are going to check whether we win or not
-        
-    Pc + a*x
+        int it = removeQueries[i];
+        sgt.rupd(it, it, 0LL);
 
+        int l1 = 0;
+        int r1 = max(0, it - 1);
+        int l2 = min(it + 1, n - 1);
+        int r2 = n - 1;
 
-    Mh <= Pc
+        int val1 = sgt.query(l1, r1).sum;
+        int val2 = sgt.query(l2, r2).sum;
 
-    Ch = 10
-    Pm = 7
+        if(val1 > val2)
 
-    2 times
+        ans[i] = sgt.query(0, n - 1).sum;
+    }
 
+    return ans;
+}
 
-    Winning condition Pc >= (Ch + Pm - 1)/ Mh
-
-
-
-
-*/
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin>>t;
+    int t = 1;
+    //cin>>t;
     while(t--){
         
+          int n; cin >> n;
+
+          vector<int> nums(n);
+          rep(i, n) cin >> nums[i];
+
+          vector<int> removeQueries(n);
+          rep(i, n) cin >> removeQueries[i];
+
+          vector<ll> ans = maximumSegmentSum(nums, removeQueries);
+          for(auto it : ans) cout << it << " ";
     }
     return 0;
 }

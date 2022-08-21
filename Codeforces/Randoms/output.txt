@@ -1,6 +1,7 @@
-ab
-abbc
-b
-aa
-x
-ehinopx
+aaabb
+aabab
+baaba
+bbaaa
+abb
+bab
+aaaaabaaaaabaaaaaaaa

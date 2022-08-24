@@ -43,67 +43,48 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-    
-    1 -> codeforces
-    2 -> ccodeforces
-    3 -> codeforcesss
-         ccoodeforces
-    4 -> codeforceess
-    5 -> codeforcesssss
-         ccooddeforces
-    6 -> codeforceesss
-    7 -> codeforcesssssss
-    8 -> codeforcceess
-    9 -> codeforceeesss
-         coodddeeforces
-    10 -> codeforceesssss
-          coodddeeforces
 
-    16 -> codeforrcceess
-    1028 -> ccooddeeffoorrcceessss
-    2048 -> 
-
-    1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10
-
-
-    ab      aaabb 
-
-    11
-    21
-    22
-    32
-
-*/
-
-
-bool isPalindrome(ll n){
-
-    string s = to_string(n);
-    string p = s;
-    reverse(all(p));
-    return s == p;
-}
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    //cin>>t;
+    int t;
+    cin>>t;
     while(t--){
-        
-        ll n;
-        cin >> n;
+     	
+     	ll n;
+     	cin >> n;
 
-        while(++n){
+     	vector<ll> courier(n), self(n);
 
-            db1(n);
-            if(isPalindrome(n)) {
-                cout << n << " ";
-                break;
-            }
-        }
+     	rep(i, n) cin >> courier[i];
+     	rep(i, n) cin >> self[i];
+
+     	ll ans = min(accumulate(all(self), 0LL), *max_element(all(courier)));
+     	vector<pair<ll, ll>> p(n);
+     	for(int i = 0; i < n; i++) p[i] = {courier[i], self[i]};
+
+     	sort(all(p), [&](const pair<ll, ll> &a, const pair<ll, ll> &b){
+
+     		return a.first > b.first;
+     	});
+
+     	vector<ll> pref(n);
+     	pref[0] = p[0].second;
+
+     	for(int i = 1; i < n; i++) pref[i] = pref[i - 1] + p[i].second;
+
+     	for(int i = 1; i < n; i++){
+
+     		ll byCourier = p[i].first;
+     		ll bySelf = pref[i - 1];
+
+     		ans = min(ans, max(bySelf, byCourier));
+     	}
+
+
+     	cout << ans << endl;
     }
     return 0;
 }

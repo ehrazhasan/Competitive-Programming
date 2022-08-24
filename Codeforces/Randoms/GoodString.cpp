@@ -42,68 +42,84 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
     
                 /*******************************************************************************/
-
 /*
-    
-    1 -> codeforces
-    2 -> ccodeforces
-    3 -> codeforcesss
-         ccoodeforces
-    4 -> codeforceess
-    5 -> codeforcesssss
-         ccooddeforces
-    6 -> codeforceesss
-    7 -> codeforcesssssss
-    8 -> codeforcceess
-    9 -> codeforceeesss
-         coodddeeforces
-    10 -> codeforceesssss
-          coodddeeforces
 
-    16 -> codeforrcceess
-    1028 -> ccooddeeffoorrcceessss
-    2048 -> 
-
-    1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10
-
-
-    ab      aaabb 
-
-    11
-    21
-    22
-    32
-
+    15151515151515
 */
 
-
-bool isPalindrome(ll n){
-
-    string s = to_string(n);
-    string p = s;
-    reverse(all(p));
-    return s == p;
-}
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    //cin>>t;
+    int t;
+    cin>>t;
     while(t--){
         
-        ll n;
-        cin >> n;
+        string s;
+        cin >> s;
 
-        while(++n){
+        int n = (int)s.length();
+        map<char, ll> m;
 
-            db1(n);
-            if(isPalindrome(n)) {
-                cout << n << " ";
-                break;
+        for(auto it : s) m[it]++;
+
+        ll ans = 2LL;
+        
+        queue<int> q[10];
+
+        for(int i = 0; i < n; i++){
+
+            q[s[i] - '0'].push(i);
+        }
+
+        for(int i = 0; i < 10; i++){
+
+            for(int j = 0; j < 10; j++){
+
+                if(i == j) {
+                    
+                    ans = max(ans, (ll)q[i].size());
+                    continue;
+                }
+
+                queue<int> q1 = q[i];
+                queue<int> q2 = q[j];
+
+                ll cnt = 0;
+                int prev = -1;
+
+                while(!q1.empty() and !q2.empty()){
+
+                    while(!q1.empty() and q1.front() < prev) q1.pop();
+
+                    while(!q2.empty() and !q1.empty() and q2.front() < q1.front()){
+
+                        q2.pop();
+                    }
+
+
+                    if(q1.empty() or q2.empty()) break;
+                    if(q1.front() < q2.front()){
+
+                        prev = q2.front();
+                        q1.pop();
+                        q2.pop();
+                        cnt += 2;
+                    }
+                    else{
+
+                        
+                        
+                    }
+                }
+
+                //db3(i, j, cnt);
+                ans = max(ans, cnt);
             }
         }
+
+        cout << n - ans << endl;
     }
     return 0;
 }

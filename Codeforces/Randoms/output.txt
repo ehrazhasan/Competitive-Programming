@@ -1,7 +1,1 @@
-aaabb
-aabab
-baaba
-bbaaa
-abb
-bab
-aaaaabaaaaabaaaaaaaa
+124

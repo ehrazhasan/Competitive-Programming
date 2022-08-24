@@ -41,69 +41,118 @@ ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) %
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
     
-                /*******************************************************************************/
+      
+               /*******************************************************************************/
 
-/*
-    
-    1 -> codeforces
-    2 -> ccodeforces
-    3 -> codeforcesss
-         ccoodeforces
-    4 -> codeforceess
-    5 -> codeforcesssss
-         ccooddeforces
-    6 -> codeforceesss
-    7 -> codeforcesssssss
-    8 -> codeforcceess
-    9 -> codeforceeesss
-         coodddeeforces
-    10 -> codeforceesssss
-          coodddeeforces
-
-    16 -> codeforrcceess
-    1028 -> ccooddeeffoorrcceessss
-    2048 -> 
-
-    1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10
+const int N = 3e5 + 5;
+ll dp[N][6][2];
 
 
-    ab      aaabb 
+ll solve(int index, ll movesLeft, ll leftRem, bool allowedLeft, vector<ll> &a){
 
-    11
-    21
-    22
-    32
+	if(dp[index][leftRem][allowedLeft] != -1) return dp[index][leftRem][allowedLeft];
+	int n = (int)a.size();
+	if(movesLeft == 0) return 0;
 
-*/
+	
+
+	ll ans = 0;
+	if(allowedLeft and leftRem and index - 1 >= 1){
+
+		ans = max(ans, solve(index - 1, movesLeft - 1, leftRem - 1, 0, a) + a[index - 1]);
+	}
+	
+	ans = max(ans, solve(index + 1, movesLeft - 1, leftRem, 1, a) + a[index + 1]);
+	
+	
 
 
-bool isPalindrome(ll n){
-
-    string s = to_string(n);
-    string p = s;
-    reverse(all(p));
-    return s == p;
+	return dp[index][leftRem][allowedLeft] = ans;
 }
+
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    //cin>>t;
+    int t;
+    cin>>t;
     while(t--){
         
-        ll n;
-        cin >> n;
+        ll n, k, z;
+        cin >> n >> k >> z;
 
-        while(++n){
+        vector<ll> v(n + 1);
+        repA(i, 1, n) cin >> v[i];
 
-            db1(n);
-            if(isPalindrome(n)) {
-                cout << n << " ";
-                break;
-            }
+        for(int i = 0; i <= n; i++){
+
+        	for(int j = 0; j <= 5; j++){
+
+        		for(int k = 0; k <= 1; k++){
+
+        			dp[i][j][k] = -1;
+        		}
+        	}
         }
+
+        cout << v[1] + solve(1, k, z, 0, v) << endl;
+
+     //    vector<ll> pref(n + 1);
+     //    for(int i = 1; i <= n; i++) pref[i] = pref[i - 1] + v[i];
+
+     //    // for(int i = 1; i <= n; i++) cout << pref[i] << " ";
+     //    // cout << endl;
+
+     //    ll ans = 0;
+    	// ll rem = k;
+    	// for(int i = 2; i <= n; i++){
+
+    	// 	rem = k;
+    	// 	ll sum = pref[i];
+    	// 	rem -= (i - 1);
+
+    	// 	if(rem < 0){
+    	// 		continue;
+    	// 	}
+
+    	// 	ll can = (rem + 1) / 2;
+    	// 	can = min(z, can);
+
+    	// 	//db2(i,can);
+
+    	// 	sum += can * v[i - 1];
+    	// 	// if(rem % 2 == 0){
+
+    	// 	// 	sum += can * v[i];
+    	// 	// 	rem -= 2 * can;
+    	// 	// 	//db2(i,sum);
+    	// 	// }
+    	// 	// else{
+
+    	// 		sum += (can - 1) * v[i];
+    	// 		rem -= (2 * can - 1);
+    	// 	//}
+
+    	// 	if(rem > 0){
+
+    	// 		// if(can % 2 == 0){
+
+    	// 		// 	ll r = min(n, i + rem);
+    	// 		// 	sum += pref[r] - pref[i];
+    	// 		// }
+    	// 		// else{
+
+    	// 			ll r = min(n, i - 1 + rem);
+    	// 			sum += pref[r] - pref[i - 1];
+    	// 		// }
+    	// 	}
+    		
+    	// 	//db2(i, sum);
+    	// 	ans = max(ans, sum);
+    	// }
+
+     //    cout << ans << endl;
     }
     return 0;
 }

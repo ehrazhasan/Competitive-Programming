@@ -43,47 +43,7 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-/*
-    
-    1 -> codeforces
-    2 -> ccodeforces
-    3 -> codeforcesss
-         ccoodeforces
-    4 -> codeforceess
-    5 -> codeforcesssss
-         ccooddeforces
-    6 -> codeforceesss
-    7 -> codeforcesssssss
-    8 -> codeforcceess
-    9 -> codeforceeesss
-         coodddeeforces
-    10 -> codeforceesssss
-          coodddeeforces
 
-    16 -> codeforrcceess
-    1028 -> ccooddeeffoorrcceessss
-    2048 -> 
-
-    1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10
-
-
-    ab      aaabb 
-
-    11
-    21
-    22
-    32
-
-*/
-
-
-bool isPalindrome(ll n){
-
-    string s = to_string(n);
-    string p = s;
-    reverse(all(p));
-    return s == p;
-}
 
 int main(){
     ios::sync_with_stdio(0);
@@ -93,17 +53,27 @@ int main(){
     //cin>>t;
     while(t--){
         
-        ll n;
-        cin >> n;
+    	ll n;
+    	cin >> n;
 
-        while(++n){
+    	string ans = "codeforces";
+    	vector<ll> cnt(10, 1);
 
-            db1(n);
-            if(isPalindrome(n)) {
-                cout << n << " ";
-                break;
-            }
-        }
+    	ll curr = 1; int i = 0;
+    	while(curr < n){
+
+    		curr /= cnt[i];
+    		cnt[i] += 1;
+    		curr *= cnt[i];
+    		i = (i + 1) % 10;
+    	}
+    	
+    	for(int i = 0; i < 10; i++){
+
+    		ll times = cnt[i];
+    		while(times--) cout << ans[i];
+    	}
+    	cout << endl;
     }
     return 0;
 }

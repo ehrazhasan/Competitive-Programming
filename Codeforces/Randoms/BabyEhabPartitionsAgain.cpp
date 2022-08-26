@@ -42,110 +42,108 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
     
                 /*******************************************************************************/
+ll n;
+vector<ll> v;
+const int N = 2e5 + 5;
+const int I = 105;
+ll dp[I][N];
 
+bool canPartition(int index, ll target, vector<ll> &p, vector<ll> &sums){
+	
+	db2(index, target);
+	if(target == 0) {
+		
+		for(auto it : sums) cout << it << " ";
+		cout << endl;
+		return true;
+	}
+	if(target < 0 or index >= (int)p.size()) return false;
 
-bool equalSum(vector<ll>& v, int ind, ll curSum, ll& target, vector<ll>& dp, vector<ll> &sums) {
-    
-    db2(ind, curSum);
-    if(curSum == 0) {
-        for(auto it : sums) cout << it << " ";
-        cout << endl;
-        return true;
-    }
+	if(dp[index][target] != -1) return dp[index][target];
 
-    if(curSum < 0 || ind == v.size()) {
-        return false;
-    }
+	sums.push_back(p[index]);
+	bool pick = canPartition(index + 1, target - p[index], p, sums);
+	sums.pop_back();
+	bool dontPick = canPartition(index + 1, target, p, sums);
 
-    if(dp[curSum] != -1) {
-        return dp[curSum];
-    }
+	if(pick or dontPick) {
 
-    bool pick = false;
-    sums.push_back(v[ind]);
-    pick = equalSum(v, ind+1, curSum - v[ind], target, dp, sums);
-    sums.pop_back();
-    bool notpick = equalSum(v, ind+1, curSum, target, dp, sums);
-
-    return dp[curSum] = pick || notpick;
+		return dp[index][target] = true;
+	}
+	return dp[index][target] = false;
 }
-// bool findPartiion(vector<ll> &arr, int n)
-// {
-//     int sum = 0;
-//     int i, j;
- 
-//     // Calculate sum of all elements
-//     for (i = 0; i < n; i++)
-//         sum += arr[i];
- 
-//     if (sum % 2 != 0)
-//         return false;
- 
-//     bool part[sum / 2 + 1];
- 
-//     // Initialize the part array
-//     // as 0
-//     for (i = 0; i <= sum / 2; i++) {
-//         part[i] = 0;
-//     }
- 
-//     // Fill the partition table in bottom up manner
- 
-//     for (i = 0; i < n; i++) {
-//         // the element to be included
-//         // in the sum cannot be
-//         // greater than the sum
-//         for (j = sum / 2; j >= arr[i];
-//              j--) { // check if sum - arr[i]
-//             // could be formed
-//             // from a subset
-//             // using elements
-//             // before index i
-//             if (part[j - arr[i]] == 1 || j == arr[i])
-//                 part[j] = 1;
-//         }
-//     }
- 
-//     return part[sum / 2];
-// }
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     int t = 1;
-    // cin>>t;
+    //cin>>t;
     while(t--){
         
-        ll n;
         cin >> n;
-        vector<ll> v(n);
+        v.resize(n, 0);
+
         rep(i, n) cin >> v[i];
 
-        ll sum = accumulate(v.begin(), v.end(), 0);
+        ll sum = accumulate(all(v), 0LL);
 
-        if(sum % 2 != 0) {
-            cout << "No" << endl;
-            continue;
+        if(sum % 2){
+			cout << 0 << endl;
+       		continue;
         }
 
+
+        int cntOdds = 0;
+        int pos = -1;
+        for(int i = 0; i < n; i++) {
+        	
+        	if(v[i] % 2){
+
+        		cntOdds += 1;
+        		pos = i;
+        	}
+        }
+
+        
         ll target = sum / 2;
-        vector<ll> dp(target+2, -1);
+        //db1(target);
+        for(int j = 0; j <= n; j++)
+    		for(int i = 0; i <= target + 1; i++) dp[j][i] = -1;
 
-        //cout << findPartiion(v, n);
+    	vector<ll> sums;
+    	if(!canPartition(0, target, v, sums)){
 
-        vector<ll> sums;
-        if(equalSum(v, 0, target, target, dp, sums)) {
+    		cout << 0 << endl;
+    		continue;
+    	}
 
-            for(int i = 0; i <= target; i++){
 
-                db1(dp[i]);
-            }
-            cout << "Yes" << endl;
+        if(cntOdds > 0 and cntOdds % 2 == 0){
+        	cout << 1 << endl;
+        	cout << pos + 1 << endl;
+        	continue;
         }
-        else {
-            cout << "No" << endl;
-        }
+
+        //Now we are left with only elements with even numbers
+
+        bool okay = true;
+        while(okay){
+
+	     	for(int i = 0; i < n; i++){
+
+	     		if(v[i] % 2){
+
+	     			cout << 1 << endl;
+	     			cout << i + 1 << endl;
+	     			okay = false;
+	     			break;
+	     		}
+
+	     		v[i] /= 2;
+	     	}
+	     }
+
 
     }
     return 0;

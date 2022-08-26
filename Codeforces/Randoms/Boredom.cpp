@@ -43,110 +43,78 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
+const int N = 1e5 + 5;
+ll dp[N][2];
+ll n;
+vector<pair<ll, ll>> p;
 
-bool equalSum(vector<ll>& v, int ind, ll curSum, ll& target, vector<ll>& dp, vector<ll> &sums) {
-    
-    db2(ind, curSum);
-    if(curSum == 0) {
-        for(auto it : sums) cout << it << " ";
-        cout << endl;
-        return true;
-    }
+ll solve(int index, bool lastValueTaken){
 
-    if(curSum < 0 || ind == v.size()) {
-        return false;
-    }
+	if(index >= p.size()) return 0;
 
-    if(dp[curSum] != -1) {
-        return dp[curSum];
-    }
+	if(dp[index][lastValueTaken] != -1) return dp[index][lastValueTaken];
 
-    bool pick = false;
-    sums.push_back(v[ind]);
-    pick = equalSum(v, ind+1, curSum - v[ind], target, dp, sums);
-    sums.pop_back();
-    bool notpick = equalSum(v, ind+1, curSum, target, dp, sums);
+	ll curr = p[index].first;
+	ll f = p[index].second;
 
-    return dp[curSum] = pick || notpick;
+	ll ans = 0;
+
+	if(!lastValueTaken){
+
+		ans = max(ans, solve(index + 1, 0));
+		ans = max(ans, solve(index + 1, 1) + curr * f);
+	}
+
+	if(index - 1 >= 0 and curr + 1 == p[index - 1].first){
+
+		ans = max(ans, solve(index + 1, 0));
+	}
+	else{
+
+		ans = max(ans, solve(index + 1, 0));
+		ans = max(ans, solve(index + 1, 1) + curr * f);
+	}	
+
+
+	return dp[index][lastValueTaken] = ans;
 }
-// bool findPartiion(vector<ll> &arr, int n)
-// {
-//     int sum = 0;
-//     int i, j;
- 
-//     // Calculate sum of all elements
-//     for (i = 0; i < n; i++)
-//         sum += arr[i];
- 
-//     if (sum % 2 != 0)
-//         return false;
- 
-//     bool part[sum / 2 + 1];
- 
-//     // Initialize the part array
-//     // as 0
-//     for (i = 0; i <= sum / 2; i++) {
-//         part[i] = 0;
-//     }
- 
-//     // Fill the partition table in bottom up manner
- 
-//     for (i = 0; i < n; i++) {
-//         // the element to be included
-//         // in the sum cannot be
-//         // greater than the sum
-//         for (j = sum / 2; j >= arr[i];
-//              j--) { // check if sum - arr[i]
-//             // could be formed
-//             // from a subset
-//             // using elements
-//             // before index i
-//             if (part[j - arr[i]] == 1 || j == arr[i])
-//                 part[j] = 1;
-//         }
-//     }
- 
-//     return part[sum / 2];
-// }
+
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     int t = 1;
-    // cin>>t;
+    //cin>>t;
     while(t--){
-        
-        ll n;
-        cin >> n;
-        vector<ll> v(n);
-        rep(i, n) cin >> v[i];
+       
+    	cin >> n;
+    	vector<ll> v(n);
+    	rep(i, n) cin >> v[i];
 
-        ll sum = accumulate(v.begin(), v.end(), 0);
+    	for(int i = 0; i <= n; i++){
 
-        if(sum % 2 != 0) {
-            cout << "No" << endl;
-            continue;
-        }
+    		dp[i][0] = -1;
+    		dp[i][1] = -1;
+    	}
 
-        ll target = sum / 2;
-        vector<ll> dp(target+2, -1);
+    	p.clear();
+    	
 
-        //cout << findPartiion(v, n);
+    	map<ll, ll> m;
+    	for(auto it : v) m[it]++;
 
-        vector<ll> sums;
-        if(equalSum(v, 0, target, target, dp, sums)) {
+    	for(auto it : m){
 
-            for(int i = 0; i <= target; i++){
+    		p.push_back({it.first, it.second});
+    	} 
 
-                db1(dp[i]);
-            }
-            cout << "Yes" << endl;
-        }
-        else {
-            cout << "No" << endl;
-        }
+    	sort(all(p), [&](const pair<ll, ll> &a, const pair<ll, ll> &b){
 
+    		return a.first > b.first;
+    	});
+
+    	cout << solve(0, 0);
     }
     return 0;
 }

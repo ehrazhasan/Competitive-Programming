@@ -42,64 +42,100 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
     
                 /*******************************************************************************/
+
 /*
-    
-    number of catridges to combine dollars / perksReward
-
-    10 dollars / 2 = 5 catridge to combine
-
-    5 catridges left 
-    This means I can have 5 * 2 + 10 = 20 dollars 
-    20 / 2 = 10
-
-    
-    12 / 2 = 4 catridges to combine
-
-    recycle 1 -> 12 / 2 = 6 catridges to combine
-    recyle 2 -> 14 / 2 = 7 catridges to combine
-    recycle 3 -> 16 / 2 = 8 catridges
-
-
+	
+	RRRLLL
+	RRRRLLLL
+	RRRRLLL
 */
-
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    //cin>>t;
+    int t;
+    cin>>t;
     while(t--){
         
-        ll catridges, dollars, reReward, perksReward;
-        cin >> catridges >> dollars >> reReward >> perksReward;
+        int n;
+        cin >> n;
 
-        ll start = 0, end = catridges + 1;
-        ll ans = 0;
+        string s;
+        cin >> s;
 
-        while(start <= end){
+        vector<ll> scores(n), ans(n + 1);
 
-            ll mid = (start + end) >> 1;
+        for(int i = 0; i < n; i++){
 
-            ll currentDollars = (mid * reReward) + dollars;
-            ll combine = currentDollars / perksReward;
-            ll catridgesLeft = catridges - mid;
-
-            if(catridgesLeft >= combine){
-                db1(mid);
-                //58722
-                //674
-                ans = max(ans, combine);
-                start = mid + 1;
-            }
-            else{
-
-                end = mid - 1;
-            }
-
+        	if(s[i] == 'L') scores[i] = i;
+        	else scores[i] = (n - i - 1);
         }
 
-        cout << ans << endl;
+        // for(auto it : scores) cout << it << " ";
+        // cout << endl;	
+
+    	ans[0] = accumulate(all(scores), 0LL);
+
+    	int l = 0;
+    	int r = n - 1;
+    	int k = 1;
+    	int x = 1;
+
+    	while(l <= r){
+
+    		//db2(l, r);
+    		if(s[l] == 'L' and x){
+
+    			ll sum = ans[k - 1];
+    			sum -= scores[l];
+    			sum += (n - l - 1);
+    			scores[l] = (n - l - 1);
+    			ans[k] = max(sum, ans[k - 1]);
+    			k++;
+    			l++;
+    			x ^= 1;
+
+    			continue;
+    		} 
+
+    		if(s[r] == 'R' and !x){
+
+    			ll sum = ans[k - 1];
+    			sum -= scores[r];
+    			sum += r;
+    			scores[r] = r;
+    			ans[k] = max(sum, ans[k - 1]);
+    			r--;
+    			k++;
+    			x ^= 1;
+
+    			continue;
+    		}
+
+    		if(s[l] == 'R' and x){
+
+    			x ^= 1;
+    			l++;
+    			continue;
+    		}
+
+    		if(s[r] == 'L' and !x){
+
+    			x ^= 1;
+    			r--;
+    			continue;
+    		} 
+    		
+			l++;
+			r--;
+    		
+    	}
+
+    	for(int i = k; i <= n; i++) ans[i] = ans[i - 1];
+
+    	for(int i = 1; i <= n; i++) cout << ans[i] << " ";
+    	cout << endl;
     }
     return 0;
 }

@@ -43,110 +43,66 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
+vector<int> getAns(vector<int> &data, vector<vector<int>> &updates){
 
-bool equalSum(vector<ll>& v, int ind, ll curSum, ll& target, vector<ll>& dp, vector<ll> &sums) {
-    
-    db2(ind, curSum);
-    if(curSum == 0) {
-        for(auto it : sums) cout << it << " ";
-        cout << endl;
-        return true;
+    int n = (int)data.size();
+    int k = (int)updates.size();
+
+    vector<int> cnt(n + 5);
+
+    for(int i = 0; i < k; i++){
+
+        int l = updates[i][0];
+        int r = updates[i][1];
+        
+        cnt[l] += 1;
+        cnt[r + 1] -= 1;
     }
 
-    if(curSum < 0 || ind == v.size()) {
-        return false;
+    for(int i = 1; i <= n; i++) cnt[i] += cnt[i - 1];
+
+    for(int i = 1; i <= n; i++){
+
+        if(cnt[i] % 2){
+
+            data[i] *= -1;
+        }
     }
 
-    if(dp[curSum] != -1) {
-        return dp[curSum];
-    }
-
-    bool pick = false;
-    sums.push_back(v[ind]);
-    pick = equalSum(v, ind+1, curSum - v[ind], target, dp, sums);
-    sums.pop_back();
-    bool notpick = equalSum(v, ind+1, curSum, target, dp, sums);
-
-    return dp[curSum] = pick || notpick;
+    return data;
 }
-// bool findPartiion(vector<ll> &arr, int n)
-// {
-//     int sum = 0;
-//     int i, j;
- 
-//     // Calculate sum of all elements
-//     for (i = 0; i < n; i++)
-//         sum += arr[i];
- 
-//     if (sum % 2 != 0)
-//         return false;
- 
-//     bool part[sum / 2 + 1];
- 
-//     // Initialize the part array
-//     // as 0
-//     for (i = 0; i <= sum / 2; i++) {
-//         part[i] = 0;
-//     }
- 
-//     // Fill the partition table in bottom up manner
- 
-//     for (i = 0; i < n; i++) {
-//         // the element to be included
-//         // in the sum cannot be
-//         // greater than the sum
-//         for (j = sum / 2; j >= arr[i];
-//              j--) { // check if sum - arr[i]
-//             // could be formed
-//             // from a subset
-//             // using elements
-//             // before index i
-//             if (part[j - arr[i]] == 1 || j == arr[i])
-//                 part[j] = 1;
-//         }
-//     }
- 
-//     return part[sum / 2];
-// }
+
+
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     int t = 1;
-    // cin>>t;
+    //cin>>t;
     while(t--){
         
-        ll n;
-        cin >> n;
-        vector<ll> v(n);
-        rep(i, n) cin >> v[i];
+        ll n, k;
+        cin >> n >> k;
 
-        ll sum = accumulate(v.begin(), v.end(), 0);
+        vector<int> v(n + 5);
+        repA(i, 1, n) cin >> v[i];
 
-        if(sum % 2 != 0) {
-            cout << "No" << endl;
-            continue;
+        vector<vector<int>> updates(k);
+        rep(i, k){
+            
+            int x, y;
+            cin >> x >> y;
+            updates[i] = {x, y};
+        }  
+
+        vector<int> ans = getAns(v, updates);
+
+        for(int i = 1; i <= n; i++){
+
+            cout << v[i] << " ";
         }
-
-        ll target = sum / 2;
-        vector<ll> dp(target+2, -1);
-
-        //cout << findPartiion(v, n);
-
-        vector<ll> sums;
-        if(equalSum(v, 0, target, target, dp, sums)) {
-
-            for(int i = 0; i <= target; i++){
-
-                db1(dp[i]);
-            }
-            cout << "Yes" << endl;
-        }
-        else {
-            cout << "No" << endl;
-        }
-
+        cout << endl;
     }
     return 0;
 }

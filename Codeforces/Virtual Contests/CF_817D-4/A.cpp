@@ -42,64 +42,39 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
     
                 /*******************************************************************************/
-/*
-    
-    number of catridges to combine dollars / perksReward
 
-    10 dollars / 2 = 5 catridge to combine
-
-    5 catridges left 
-    This means I can have 5 * 2 + 10 = 20 dollars 
-    20 / 2 = 10
-
-    
-    12 / 2 = 4 catridges to combine
-
-    recycle 1 -> 12 / 2 = 6 catridges to combine
-    recyle 2 -> 14 / 2 = 7 catridges to combine
-    recycle 3 -> 16 / 2 = 8 catridges
-
-
-*/
 
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    //cin>>t;
+    int t;
+    cin>>t;
     while(t--){
         
-        ll catridges, dollars, reReward, perksReward;
-        cin >> catridges >> dollars >> reReward >> perksReward;
+        string s = "Timur";
+        set<char> st{all(s)};
+       	int n;
+       	cin >> n; 
+        string p;
+        cin >> p;
 
-        ll start = 0, end = catridges + 1;
-        ll ans = 0;
+        bool okay = true;
+        for(int i = 0; i < p.length(); i++){
 
-        while(start <= end){
+        	if(st.find(p[i]) != st.end()){
 
-            ll mid = (start + end) >> 1;
+        		st.erase(p[i]);
+        	} 
+        	else{
 
-            ll currentDollars = (mid * reReward) + dollars;
-            ll combine = currentDollars / perksReward;
-            ll catridgesLeft = catridges - mid;
-
-            if(catridgesLeft >= combine){
-                db1(mid);
-                //58722
-                //674
-                ans = max(ans, combine);
-                start = mid + 1;
-            }
-            else{
-
-                end = mid - 1;
-            }
-
+        		okay = false;
+        		break;
+        	}
         }
 
-        cout << ans << endl;
-    }
+        cout << (okay and st.size() == 0 ? "YES\n" : "NO\n");
+    }		
     return 0;
 }

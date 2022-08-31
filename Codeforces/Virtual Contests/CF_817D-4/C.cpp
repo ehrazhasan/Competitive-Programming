@@ -42,64 +42,76 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
     
                 /*******************************************************************************/
-/*
-    
-    number of catridges to combine dollars / perksReward
 
-    10 dollars / 2 = 5 catridge to combine
-
-    5 catridges left 
-    This means I can have 5 * 2 + 10 = 20 dollars 
-    20 / 2 = 10
-
-    
-    12 / 2 = 4 catridges to combine
-
-    recycle 1 -> 12 / 2 = 6 catridges to combine
-    recyle 2 -> 14 / 2 = 7 catridges to combine
-    recycle 3 -> 16 / 2 = 8 catridges
-
-
-*/
 
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    //cin>>t;
+    int t;
+    cin>>t;
     while(t--){
         
-        ll catridges, dollars, reReward, perksReward;
-        cin >> catridges >> dollars >> reReward >> perksReward;
+        map<string, int> freq;
+        vector<int> points(3, 0);
+        map<string, set<int>> ff;
 
-        ll start = 0, end = catridges + 1;
-        ll ans = 0;
+        int n;
+        cin >> n;
 
-        while(start <= end){
+        vector<string> s[3];
 
-            ll mid = (start + end) >> 1;
+        rep(i, 3){
 
-            ll currentDollars = (mid * reReward) + dollars;
-            ll combine = currentDollars / perksReward;
-            ll catridgesLeft = catridges - mid;
+        	rep(j, n){
 
-            if(catridgesLeft >= combine){
-                db1(mid);
-                //58722
-                //674
-                ans = max(ans, combine);
-                start = mid + 1;
-            }
-            else{
-
-                end = mid - 1;
-            }
-
+        		string x;
+        		cin >> x;
+        		freq[x]++;
+        		s[i].push_back(x);
+        		ff[x].insert(i);
+        	}
         }
 
-        cout << ans << endl;
+        for(auto it : freq){
+
+        	string ss = it.first;
+        	int f = it.second;
+        	//db2(ss,f);
+        	if(f == 1){
+
+        		if(ff[ss].find(0) != ff[ss].end()){
+
+        			points[0] += 3;
+        		}
+        		else if(ff[ss].find(1) != ff[ss].end()){
+        			points[1] += 3;
+        		}
+        		else{
+
+        			points[2] += 3;
+        		}
+        	}
+        	else if(f == 2){
+
+        		if(ff[ss].find(0) != ff[ss].end()){
+
+        			points[0] += 1;
+        		}
+        		if(ff[ss].find(1) != ff[ss].end()){
+        			points[1] += 1;
+        		}
+
+        		if(ff[ss].find(2) != ff[ss].end()){
+
+        			points[2] += 1;
+        		}
+        	}
+        }
+
+        for(auto it : points) cout << it << " ";
+        cout << endl;
     }
     return 0;
 }

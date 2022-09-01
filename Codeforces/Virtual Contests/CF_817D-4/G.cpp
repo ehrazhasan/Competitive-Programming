@@ -43,7 +43,18 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
-const int N = 1002;
+ll getXor(ll n){
+
+	int ans = 0;
+    for(int i = 1; i <= n; i++){
+
+    	ans ^= i;
+
+    }      
+
+    return ans;  
+}
+
 
 int main(){
     ios::sync_with_stdio(0);
@@ -53,41 +64,95 @@ int main(){
     cin>>t;
     while(t--){
         
-        ll n, q;
-        cin >> n >> q;
+        ll n;
+        cin >> n;
 
-        vector<ll> areas(n), x(n), y(n);
-        vector<vector<ll>> pfs(N, vector<ll>(N, 0LL));
+        if(n == 3){
 
-        rep(i, n){
-
-        	cin >> x[i] >> y[i];
-        	areas[i] = (x[i] * y[i]);
-            pfs[x[i]][y[i]] += areas[i];
-        } 
-
-        for(ll i = 1; i <= 1001; i++){
-
-            for(ll j = 1; j <= 1001; j++){
-
-                pfs[i][j] += pfs[i - 1][j] + pfs[i][j - 1] - pfs[i - 1][j - 1];
-            }
+        	cout << "1 2 3" << endl;
+        	continue;
         }
 
 
-        rep(i, q){
-
-            ll hs, ws, hb, wb;
-            cin >> hs >> ws >> hb >> wb;    
-            
-            ll row1 = hs + 1;
-            ll row2 = hb - 1;
-            ll col1 = ws + 1;
-            ll col2 = wb - 1;
-
-            ll ans = pfs[row2][col2] - pfs[row1 - 1][col2] - pfs[row2][col1 - 1] + pfs[row1 - 1][col1 - 1];
-            cout << ans << endl;
+        for(int i = 0; i <= n; i++){
+        	cout << i << ": ";
+        	cout << getXor(i) << endl;
         }
+
+        ll x = 0;
+
+        for(int i = 1; i <= n; i++) x ^= i;
+
+        if(x == 0){
+
+        	for(int i = 1; i <= n; i++) cout << i << " ";
+        	cout << endl;
+        	continue;
+        }
+
+        x = 0;
+        for(int i = 1; i < n; i++) x ^= i;
+
+        if(x == 0){
+
+        	for(int i = 0; i < n; i++) cout << i << " ";
+        	cout << endl;
+        	continue;
+        }
+
+        x = 0;
+
+        for(int i = 1; i < n - 1; i++) x ^= i;
+
+        if(x == 0){
+
+        	ll x1 = 0;
+        	for(int i = 1; i < n - 2; i++) x1 ^= i;
+
+        	for(int i = 0; i < n - 2; i++) cout << i << " ";
+
+        	ll j = n;
+        	while(true){
+
+        		if((n ^ x1) > n){
+
+        			cout << n << " " << (n ^ x1) << endl;
+        			break;
+        		}
+
+        		n++;
+        	}
+
+        	continue;
+        }
+
+        x = 0;
+
+        for(int i = 1; i <= n - 3; i++) x ^= i;
+        //db1(x);
+        if(x == 0){
+
+        	ll x1 = 0;
+        	for(int i = 1; i <= n - 2; i++) x1 ^= i;
+
+        	//db1(x1);
+        	for(int i = 1; i <= n - 2; i++) cout << i << " ";
+
+        	ll j = n;
+        	while(true){
+
+        		if((n ^ x1) > n){
+
+        			cout << n << " " << (n ^ x1) << endl;
+        			break;
+        		}
+
+        		n++;
+        	}
+
+        	continue;
+        }
+
     }
     return 0;
 }

@@ -49,63 +49,34 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
+    int t;
     cin>>t;
     while(t--){
-        
-        ll n, s;
-        cin >> n >> s;
+     	
+     	ll n;
+     	cin >> n;
+     	string s;
+     	cin >> s;
 
-        ll number = n;
-        vector<ll> digits;
-        while(number > 0){
+     	vector<int> ans(n);
+     	
+     	for(int i = 0; i < n; i++){
 
-            digits.push_back(number % 10);
-            number /= 10;
-        }
+     		char ch = s[i];
+     		int c = 1;
+     		ans[i] = c;
 
-        reverse(all(digits));
-        for(int i = 1; i < digits.size(); i++) digits[i] += digits[i - 1];
+     		while(i + 1 < n and s[i + 1] == ch){
 
-        if(digits[(int)digits.size() - 1] <= s){
-            cout << 0 << endl;
-            continue;
-        }     
+     			c++;
+     			ans[i + 1] = c;
+     			i++;
+     		}
+     	}
 
-        // for(auto it : digits) cout << it << " ";
-        // cout << endl;
-        auto it = lower_bound(all(digits), s);
-
-        ll ans = 0;
-        if(it == digits.begin()){
-
-
-            ans += 1;
-            for(int i = 0; i < digits.size(); i++){
-
-                ans = (ans * 10); 
-            }
-           
-            cout << ans - n << endl;
-        }
-        else{
-
-            int index = it - digits.begin();
-            index--;
-            digits[index]++;
-           
-            for(int i = 0; i <= index; i++){
-
-                ans = (ans * 10) + digits[i] - (i - 1 >= 0 ? digits[i - 1] : 0);
-            }
-            
-            for(int i = index + 1; i < digits.size(); i++){
-
-                ans = (ans * 10);
-            }
-
-            cout << ans - n << endl;
-        }
+     	cout << *max_element(all(ans)) << endl;
+     	for(auto it : ans) cout << it << " ";
+     	cout << endl;
     }
     return 0;
 }

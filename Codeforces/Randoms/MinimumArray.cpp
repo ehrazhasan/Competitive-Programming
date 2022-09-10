@@ -50,62 +50,80 @@ int main(){
     cin.tie(0);
     cout.tie(0);
     int t = 1;
-    cin>>t;
+    // cin>>t;
     while(t--){
         
-        ll n, s;
-        cin >> n >> s;
+        ll n;
+        cin >> n;
+        vector<ll> a(n), b(n);
+        rep(i, n) cin >> a[i];
+        rep(i, n) cin >> b[i];
 
-        ll number = n;
-        vector<ll> digits;
-        while(number > 0){
+        multiset<ll> st;
+        for(auto it : b) st.insert(it);
 
-            digits.push_back(number % 10);
-            number /= 10;
-        }
+        map<ll, ll> m;
+    	for(auto it : b) m[it]++;
+       	
+    	vector<ll> c(n);
+    	for(int i = 0; i < n; i++){
 
-        reverse(all(digits));
-        for(int i = 1; i < digits.size(); i++) digits[i] += digits[i - 1];
+    		if(a[i] == 0){
 
-        if(digits[(int)digits.size() - 1] <= s){
-            cout << 0 << endl;
-            continue;
-        }     
+    			if(m[0] > 0) {
 
-        // for(auto it : digits) cout << it << " ";
-        // cout << endl;
-        auto it = lower_bound(all(digits), s);
+    				c[i] = 0;
+    				st.erase(st.find(0));
+    				m[0]--;
+    			}
+    			else{
 
-        ll ans = 0;
-        if(it == digits.begin()){
+    				c[i] = (a[i] + *st.begin()) % n;
+    				m[*st.begin()]--;
+    				st.erase(st.begin());
+    			}
+    		}
+    		else{
 
+    			ll val = n - a[i];
+    			if(m[val] > 0){
 
-            ans += 1;
-            for(int i = 0; i < digits.size(); i++){
+    				c[i] = 0;
+    				st.erase(st.find(val));
+    				m[val]--;
+    			}
+    			else{
 
-                ans = (ans * 10); 
-            }
-           
-            cout << ans - n << endl;
-        }
-        else{
+    				ll x = (a[i] + *st.begin()) % n;
+    				ll y;
 
-            int index = it - digits.begin();
-            index--;
-            digits[index]++;
-           
-            for(int i = 0; i <= index; i++){
+    				auto it = st.lower_bound(val);
+    				if(it == st.end()) y = n;
+    				else{
 
-                ans = (ans * 10) + digits[i] - (i - 1 >= 0 ? digits[i - 1] : 0);
-            }
-            
-            for(int i = index + 1; i < digits.size(); i++){
+    					y = (a[i] + *it) % n;
+    				}
 
-                ans = (ans * 10);
-            }
+    				if(x > y){
 
-            cout << ans - n << endl;
-        }
+    					c[i] = y;
+    					m[*it]--;
+    					st.erase(it);
+
+    				}
+    				else{
+
+    					c[i] = x;
+    					m[*st.begin()]--;
+    					st.erase(st.begin());
+
+    				}
+	    			
+				}
+    		}
+    	}
+
+    	for(auto it : c) cout << it << " ";
     }
     return 0;
 }

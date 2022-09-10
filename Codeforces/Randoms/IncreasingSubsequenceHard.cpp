@@ -50,62 +50,113 @@ int main(){
     cin.tie(0);
     cout.tie(0);
     int t = 1;
-    cin>>t;
+    // cin>>t.;
     while(t--){
         
-        ll n, s;
-        cin >> n >> s;
+        ll n;
+  		cin >> n;
+  		deque<ll> a(n);
+  		rep(i, n) cin >> a[i];
 
-        ll number = n;
-        vector<ll> digits;
-        while(number > 0){
+  		ll ans = 0;
+  		string s = "";
 
-            digits.push_back(number % 10);
-            number /= 10;
-        }
+  		vector<int> forwardLength(n), backwardLength(n);
 
-        reverse(all(digits));
-        for(int i = 1; i < digits.size(); i++) digits[i] += digits[i - 1];
+  		for(int i = n - 1; i >= 0; i--){
 
-        if(digits[(int)digits.size() - 1] <= s){
-            cout << 0 << endl;
-            continue;
-        }     
+  			if(i == n - 1) forwardLength[i] = 0;
+  			else{
 
-        // for(auto it : digits) cout << it << " ";
-        // cout << endl;
-        auto it = lower_bound(all(digits), s);
+  				if(a[i] < a[i + 1]){
 
-        ll ans = 0;
-        if(it == digits.begin()){
+  					forwardLength[i] = forwardLength[i + 1] + 1;
+  				}
+  				else{
+
+  					forwardLength[i] = 0;
+  				}
+  			}
+  		}
 
 
-            ans += 1;
-            for(int i = 0; i < digits.size(); i++){
+  		for(int i = 0; i < n; i++){
 
-                ans = (ans * 10); 
-            }
-           
-            cout << ans - n << endl;
-        }
-        else{
+  			if(i == 0) backwardLength[i] = 0;
+  			else{
 
-            int index = it - digits.begin();
-            index--;
-            digits[index]++;
-           
-            for(int i = 0; i <= index; i++){
+  				if(a[i - 1] > a[i]){
 
-                ans = (ans * 10) + digits[i] - (i - 1 >= 0 ? digits[i - 1] : 0);
-            }
-            
-            for(int i = index + 1; i < digits.size(); i++){
+  					backwardLength[i] = backwardLength[i - 1] + 1;
+  				}
+  				else{
 
-                ans = (ans * 10);
-            }
+  					backwardLength[i] = 0;
+  				}
+  			}
+  		}
 
-            cout << ans - n << endl;
-        }
+  		int l = 0, r = n - 1;
+
+  		int prev = -1;
+  		while(l < r){
+
+  			if(a[l] > prev and a[r] > prev and a[l] < a[r]){
+
+  				ans += 1;
+  				s += 'L';
+  				prev = a[l];
+  				l++;
+  			}
+  			else if(a[l] > prev and a[r] > prev and a[l] > a[r]){
+
+  				ans += 1;
+  				s += 'R';
+  				prev = a[r];
+  				r--;
+  			}
+  			else if(a[l] > prev and a[r] > prev and a[l] == a[r]){
+
+  				if(forwardLength[l] > backwardLength[r]){
+  					ans += 1;
+	  				s += 'L';
+	  				prev = a[l];
+	  				l++;
+  				}
+  				else{
+  					ans += 1;
+	  				s += 'R';
+	  				prev = a[r];
+	  				r--;
+  				}
+  			}
+  			else if(a[l] > prev){
+
+  				prev = a[l];
+  				ans += 1;
+  				s += 'L';
+  				l++;
+  			}
+  			else if(a[r] > prev){
+
+  				ans += 1;
+  				s += 'R';
+  				prev = a[r];
+  				r--;
+  			}
+  			else{
+
+  				break;
+  			}
+  		}
+
+  		if((l == r and a[l] > prev) or ans == 0){
+
+  			ans += 1;
+  			s += 'L';
+  		}
+
+  		cout << ans << "\n" << s << endl;
     }
     return 0;
 }

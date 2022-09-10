@@ -50,62 +50,51 @@ int main(){
     cin.tie(0);
     cout.tie(0);
     int t = 1;
-    cin>>t;
+    // cin>>t;
     while(t--){
+        	
+        ll n;
+        cin >> n;
+        vector<ll> a(n);
+        rep(i, n) cin >> a[i];
+
+        sort(all(a));
         
-        ll n, s;
-        cin >> n >> s;
+        if(n <= 32){
 
-        ll number = n;
-        vector<ll> digits;
-        while(number > 0){
+            ll C = 2;
+            while(true){
 
-            digits.push_back(number % 10);
-            number /= 10;
-        }
+                if(expo(C, n - 1, INF) <= (ll)1e12) C += 1;
+                else break;
+            }   
 
-        reverse(all(digits));
-        for(int i = 1; i < digits.size(); i++) digits[i] += digits[i - 1];
+            ll ans = INF;
+            for(ll c = 1; c <= C; c++){
 
-        if(digits[(int)digits.size() - 1] <= s){
-            cout << 0 << endl;
-            continue;
-        }     
+                ll currAns = 0;
+                for(int i = 0; i < n; i++){
 
-        // for(auto it : digits) cout << it << " ";
-        // cout << endl;
-        auto it = lower_bound(all(digits), s);
+                    ll val = expo(c, i, INF);
+                    currAns += abs(val - a[i]);
+                }
 
-        ll ans = 0;
-        if(it == digits.begin()){
-
-
-            ans += 1;
-            for(int i = 0; i < digits.size(); i++){
-
-                ans = (ans * 10); 
+                ans = min(ans, currAns);
             }
-           
-            cout << ans - n << endl;
+
+            cout << ans << endl;
         }
         else{
 
-            int index = it - digits.begin();
-            index--;
-            digits[index]++;
-           
-            for(int i = 0; i <= index; i++){
+            ll ans = 0;
+            for(int i = 0; i < n; i++){
 
-                ans = (ans * 10) + digits[i] - (i - 1 >= 0 ? digits[i - 1] : 0);
-            }
-            
-            for(int i = index + 1; i < digits.size(); i++){
-
-                ans = (ans * 10);
+                ans += abs(a[i] - 1);
             }
 
-            cout << ans - n << endl;
+            cout << ans << endl;
         }
+
     }
     return 0;
 }

@@ -49,63 +49,60 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
+    int t;
     cin>>t;
     while(t--){
         
-        ll n, s;
-        cin >> n >> s;
+        ll a, b;
+        cin >> a >> b;
 
-        ll number = n;
-        vector<ll> digits;
-        while(number > 0){
+        string s;
+        cin >> s;
 
-            digits.push_back(number % 10);
-            number /= 10;
+        int n = (int)s.length();
+
+        ll segments = 0;
+        vector<ll> aa;
+        bool gotOne = false;
+        for(int i = 0; i < n; i++){
+
+        	if(s[i] == '0') {
+
+        		ll zeros = 0;
+        		if(gotOne){
+
+        			while(i < n and s[i] == '0') i++, zeros++;
+        			i--;
+        		}
+
+        		if(zeros) aa.push_back(zeros);
+        		continue;
+        	}
+
+        	gotOne = true;
+        	segments++;
+        	ll ones = 0;
+        	while(i < n and s[i] == '1'){
+
+        		ones++;
+        		i++;
+        	}
+
+        	if(ones) aa.push_back(ones);
+        	i--;
         }
-
-        reverse(all(digits));
-        for(int i = 1; i < digits.size(); i++) digits[i] += digits[i - 1];
-
-        if(digits[(int)digits.size() - 1] <= s){
-            cout << 0 << endl;
-            continue;
-        }     
-
-        // for(auto it : digits) cout << it << " ";
-        // cout << endl;
-        auto it = lower_bound(all(digits), s);
-
         ll ans = 0;
-        if(it == digits.begin()){
+        for(int i = 2; i < aa.size(); i += 2){
 
-
-            ans += 1;
-            for(int i = 0; i < digits.size(); i++){
-
-                ans = (ans * 10); 
-            }
-           
-            cout << ans - n << endl;
+        	ans += min(a, b * aa[i - 1]);
         }
-        else{
 
-            int index = it - digits.begin();
-            index--;
-            digits[index]++;
-           
-            for(int i = 0; i <= index; i++){
+        if(aa.size() > 0) ans += a; 
+		
+        // for(auto it : aa) cout << it << " ";
+        // cout << endl;
 
-                ans = (ans * 10) + digits[i] - (i - 1 >= 0 ? digits[i - 1] : 0);
-            }
-            
-            for(int i = index + 1; i < digits.size(); i++){
-
-                ans = (ans * 10);
-            }
-
-            cout << ans - n << endl;
-        }
+		cout << ans << endl;
     }
     return 0;
 }

@@ -44,68 +44,73 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
                 /*******************************************************************************/
 
 
-
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     int t = 1;
-    cin>>t;
+    // cin>>t;
     while(t--){
-        
-        ll n, s;
-        cin >> n >> s;
+  		
+  		ll n;
+  		cin >> n;
+  		deque<ll> a(n);
+  		rep(i, n) cin >> a[i];
 
-        ll number = n;
-        vector<ll> digits;
-        while(number > 0){
+  		ll ans = 0;
+  		string s = "";
 
-            digits.push_back(number % 10);
-            number /= 10;
-        }
+  		ll prev = -1;
+  		while(a.size() > 1){
 
-        reverse(all(digits));
-        for(int i = 1; i < digits.size(); i++) digits[i] += digits[i - 1];
+  			if(a.front() > prev and a.back() > prev and a.front() < a.back()){
 
-        if(digits[(int)digits.size() - 1] <= s){
-            cout << 0 << endl;
-            continue;
-        }     
+  				prev = a.front();
+  				ans += 1;
+  				s += 'L';
+  				a.pop_front();
 
-        // for(auto it : digits) cout << it << " ";
-        // cout << endl;
-        auto it = lower_bound(all(digits), s);
+  			}
+  			else if(a.front() > prev and a.back() > prev and a.front() > a.back()){
 
-        ll ans = 0;
-        if(it == digits.begin()){
+  				ans += 1;
+  				s += 'R';
+  				prev = a.back();
+  				a.pop_back();
+  			}
+  			else if(a.front() > prev){
 
+  				prev = a.front();
+  				ans += 1;
+  				s += 'L';
+  				a.pop_front();
+  			}
+  			else if(a.back() > prev){
 
-            ans += 1;
-            for(int i = 0; i < digits.size(); i++){
+  				ans += 1;
+  				s += 'R';
+  				prev = a.back();
+  				a.pop_back();
+  			}
+  			else{
 
-                ans = (ans * 10); 
-            }
-           
-            cout << ans - n << endl;
-        }
-        else{
+  				break;
+  			}
+  		}
 
-            int index = it - digits.begin();
-            index--;
-            digits[index]++;
-           
-            for(int i = 0; i <= index; i++){
+  		if(a.size() == 1 and a.front() > prev) {
 
-                ans = (ans * 10) + digits[i] - (i - 1 >= 0 ? digits[i - 1] : 0);
-            }
-            
-            for(int i = index + 1; i < digits.size(); i++){
+  			ans += 1;
+  			s += 'L';
+  		}
 
-                ans = (ans * 10);
-            }
+  		if(ans == 0){
 
-            cout << ans - n << endl;
-        }
+  			ans = 1;
+  			s = 'L';
+  		}
+
+  		cout << ans << "\n" << s << endl;
     }
     return 0;
 }

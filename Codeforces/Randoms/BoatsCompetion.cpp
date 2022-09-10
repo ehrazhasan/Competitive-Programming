@@ -49,63 +49,50 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
+    int t;
     cin>>t;
     while(t--){
         
-        ll n, s;
-        cin >> n >> s;
+       	ll n;
+       	cin >> n;
+       	vector<ll> a(n);
+       	rep(i, n) cin >> a[i];
 
-        ll number = n;
-        vector<ll> digits;
-        while(number > 0){
+       	int ans = 0;
 
-            digits.push_back(number % 10);
-            number /= 10;
-        }
+       	for(int s = 0; s <= 100; s++){
 
-        reverse(all(digits));
-        for(int i = 1; i < digits.size(); i++) digits[i] += digits[i - 1];
+       		unordered_map<int, int> m;
+       		int cnt = 0;
+       		for(int i = 0; i < n; i++){
 
-        if(digits[(int)digits.size() - 1] <= s){
-            cout << 0 << endl;
-            continue;
-        }     
+       			m[a[i]]++;
+       		}
 
-        // for(auto it : digits) cout << it << " ";
-        // cout << endl;
-        auto it = lower_bound(all(digits), s);
+       		for(int i = 0; i < n; i++){
 
-        ll ans = 0;
-        if(it == digits.begin()){
+       			int curr = a[i];
+       			if(m[curr] == 0) continue;
+       			// db2(curr, s - curr);
+       			if(curr != s - curr and m[s - curr] > 0){
 
+       				cnt += 1;
+       				m[s - curr]--;
+       				m[curr]--;
+       			}
+       			else if(curr == s - curr and m[s - curr] > 1){
 
-            ans += 1;
-            for(int i = 0; i < digits.size(); i++){
+       				cnt += 1;
+       				m[s - curr]--;
+       				m[curr]--;
+       			}
+       		}
 
-                ans = (ans * 10); 
-            }
-           
-            cout << ans - n << endl;
-        }
-        else{
+       		// db2(s, cnt);
+       		ans = max(ans, cnt);
+       	}
 
-            int index = it - digits.begin();
-            index--;
-            digits[index]++;
-           
-            for(int i = 0; i <= index; i++){
-
-                ans = (ans * 10) + digits[i] - (i - 1 >= 0 ? digits[i - 1] : 0);
-            }
-            
-            for(int i = index + 1; i < digits.size(); i++){
-
-                ans = (ans * 10);
-            }
-
-            cout << ans - n << endl;
-        }
+       	cout << ans << endl;
     }
     return 0;
 }

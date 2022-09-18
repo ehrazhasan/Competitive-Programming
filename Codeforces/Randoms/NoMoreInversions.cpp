@@ -52,111 +52,18 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-     	
-     	ll n;
-     	cin >> n;
-     	string s;
-     	cin >> s;
-
-     	vector<int> ans(n);
-
-        set<int> q[2];
-        for(int i = 0; i < n; i++) q[s[i] - '0'].insert(i);
-
-        int c = 1;
         
-        while(!q[0].empty() or !q[1].empty()){
+        ll n, k;
+        cin >> n >> k;
 
+        int ind = n - k + 1;
 
-            if(q[0].empty() or q[1].empty()){
+        vector<int> ans(k);
+        iota(all(ans), 1);
 
-                if(q[0].empty()){
-
-                    while(!q[1].empty()){
-
-                        ans[*q[1].begin()] = c++;
-                        q[1].erase(q[1].begin());
-                    }
-
-                    break;
-                }
-
-                if(q[1].empty()){
-
-                    while(!q[0].empty()){
-
-                        ans[*q[0].begin()] = c++;
-                        q[0].erase(q[0].begin());
-                    }
-
-                    break;
-                }
-            }
-
-            int mn = min(*q[0].begin(), *q[1].begin());
-
-            if(mn == *q[0].begin()){
-
-                ans[mn] = c;
-                q[0].erase(q[0].begin());
-
-                int x = 0;
-                int prev = mn;
-
-                while(true){
-
-                    auto it = q[x ^ 1].lower_bound(prev);
-                    if(it == q[x ^ 1].end()) break;
-
-                    prev = *it;
-                    ans[prev] = c;
-                    q[x ^ 1].erase(it);
-                    x ^= 1;
-                }
-            }
-            else{
-
-                ans[mn] = c;
-                q[1].erase(q[1].begin());
-
-                int x = 1;
-                int prev = mn;
-                
-                while(true){
-
-                    auto it = q[x ^ 1].lower_bound(prev);
-                    if(it == q[x ^ 1].end()) break;
-
-                    prev = *it;
-                    ans[prev] = c;
-                    q[x ^ 1].erase(it);
-                    x ^= 1;
-                }
-            }
-
-            c++;
-        }
-
-        cout << *max_element(all(ans)) << endl;
+        reverse(ans.begin() + k - ind, ans.end());
         for(auto it : ans) cout << it << " ";
         cout << endl;
-     	// for(int i = 0; i < n; i++){
-
-     	// 	char ch = s[i];
-     	// 	int c = 1;
-     	// 	ans[i] = c;
-
-     	// 	while(i + 1 < n and s[i + 1] == ch){
-
-     	// 		c++;
-     	// 		ans[i + 1] = c;
-     	// 		i++;
-     	// 	}
-     	// }
-
-     	// cout << *max_element(all(ans)) << endl;
-     	// for(auto it : ans) cout << it << " ";
-     	// cout << endl;
     }
     return 0;
 }

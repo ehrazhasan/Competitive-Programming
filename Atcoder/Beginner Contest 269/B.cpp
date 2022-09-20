@@ -49,39 +49,64 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin>>t;
+    int t = 1;
+    // cin>>t;
     while(t--){
-        
-        ll n;
-        cin >> n;
-        
-        if(n & 1){
+     		
+     	int n = 10;
+     	vector<vector<char>> grid(n, vector<char>(n));
+     	rep(i, n){
 
-            cout << "NO\n";
-            continue;
-        }
+     		rep(j, n){
 
-        auto isPfs = [&](ll a) -> bool {
+     			cin >> grid[i][j];
+     		}
+     	}   
 
-            ll val = (ll)sqrt(a) * (ll)sqrt(a);
-            return (val == a);
-        };
+     	   
 
-        if(n % 2 == 0 and isPfs(n / 2)) {
+     	vector<vector<char>> g(n, vector<char>(n, '.'));
+     	for(int a = 0; a < n; a++){
 
-            cout << "YES" << endl;
-            continue;
-        }
+     		for(int b = 0; b < n; b++){
 
-        if(n % 4 == 0 and isPfs(n / 4)){
+     			for(int c = 0; c < n; c++){
 
-            cout << "YES\n";
-            continue;
-        }
+     				for(int d = 0; d < n; d++){
 
-        cout << "NO\n";
+     					if(a <= b and c <= d){
 
+     						for(int i = a; i <= b; i++){
+
+     							for(int j = c; j <= d; j++){
+
+     								g[i][j] = '#';
+     							}
+     							// rep(i, n){
+
+						     	// 	rep(j, n){
+
+						     	// 		cout << g[i][j];
+						     	// 	}
+						     	// 	cout << endl;
+						     	// }
+     							
+     						}
+
+
+     						if(grid == g){
+
+ 								cout << a + 1 << " " << b + 1 << endl;
+ 								cout << c + 1 << " " << d + 1 << endl;
+ 								return 0;
+     						}
+
+     						g = vector<vector<char>>(n, vector<char>(n, '.'));
+     					}
+     				}
+     			}
+     		}
+     	}
     }
     return 0;
 }

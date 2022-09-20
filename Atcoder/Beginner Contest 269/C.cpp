@@ -49,39 +49,33 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin>>t;
+    int t = 1;
+    // cin>>t;
     while(t--){
         
         ll n;
         cin >> n;
-        
-        if(n & 1){
+        set<ll> st;
+        function<void(int, ll, ll)> solve = [&](int bit, ll n, ll number){
 
-            cout << "NO\n";
-            continue;
-        }
+        	if(bit >= 60){
 
-        auto isPfs = [&](ll a) -> bool {
+        		st.insert(number);
+        		return;
+        	}
 
-            ll val = (ll)sqrt(a) * (ll)sqrt(a);
-            return (val == a);
+        	
+        	if(((n >> bit) & 1) == 1){
+
+        		solve(bit + 1, n, number + (1LL << bit));
+        	}
+
+        	solve(bit + 1, n, number);
         };
 
-        if(n % 2 == 0 and isPfs(n / 2)) {
+        solve(0, n, 0);
 
-            cout << "YES" << endl;
-            continue;
-        }
-
-        if(n % 4 == 0 and isPfs(n / 4)){
-
-            cout << "YES\n";
-            continue;
-        }
-
-        cout << "NO\n";
-
+        for(auto it : st) cout << it << endl;
     }
     return 0;
 }

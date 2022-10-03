@@ -53,42 +53,80 @@ int main(){
     cin>>t;
     while(t--){
         
-        string s;
-        cin >> s;
+        ll n;
+        cin >> n;
+        vector<ll> a(n);
+        rep(i, n) cin >> a[i];
 
-        int n = (int)s.length();
+        set<ll> st1, st2;
 
-        if(is_sorted(all(s))){
 
-            cout << "YES\n";
-            continue;
+        int i = 0;
+        for(i = 0; i < n; i++){
+
+        	if(st1.find(a[i]) != st1.end()) break;
+        	st1.insert(a[i]);
         }
 
-        bool gotOne = (s[0] == '0' ? false : true);
-        bool okay = true;
-        for(int i = 1; i < n; i++){
+        i--;
 
-            if(s[i] == '1') gotOne = true;
-            if(gotOne and s[i] == s[i - 1] and s[i] == '0') okay = false;
-            
-        }   
+        int j = n - 1;
+        for(j = n - 1; j >= 0; j--){
 
-        if(okay){
-
-            cout << "YES\n";
-            continue;
+        	if(st2.find(a[j]) != st2.end()) break;
+        	st2.insert(a[j]);
         }
 
-        bool gotZero = (s[n - 1] == '1' ? false : true);
-        okay = true;
-        for(int i = n - 2; i >= 0; i--){
+        j++;
 
-            if(s[i] == '0') gotZero = true;
-            if(gotZero and s[i] == s[i + 1] and s[i] == '1') okay = false;
-            
+       
+        int s1 = (int)st1.size();
+        int s2 = (int)st2.size();
+
+        int ans = 0;
+        vector<pair<int,int>> p;
+        map<pair<int,int>, bool> mp;
+
+        if(s1 == *st1.rbegin()){
+
+        	set<ll> st;
+        	for(int l = i + 1; l < n; l++){
+
+        		st.insert(a[l]);
+        	}
+
+        	if((int)st.size() == *st.rbegin()){
+
+        		if(s1 + (int)st.size() == n and !mp[{s1, (int)st.size()}]){
+        			ans++;
+        			p.push_back({s1, (int)st.size()});
+        			mp[{s1, (int)st.size()}] = true;
+        		}
+        	}
         }
 
-        cout << (okay ? "YES\n" : "NO\n");
+        if(s2 == *st2.rbegin()){
+
+        	set<ll> st;
+        	for(int l = 0; l < j; l++){
+
+        		st.insert(a[l]);
+        	}
+
+        	if((int)st.size() == *st.rbegin() and !mp[{(int)st.size(), s2}]){
+
+        		if(s2 + (int)st.size() == n){
+        			ans++;
+        			p.push_back({(int)st.size(), s2});
+        			mp[{(int)st.size(), s2}] = true;
+        		}
+        	}
+        }
+
+        cout << ans << endl;
+        for(auto it : p){
+        	cout << it.first << " " << it.second << endl;
+        }
     }
     return 0;
 }

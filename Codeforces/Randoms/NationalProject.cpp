@@ -52,43 +52,30 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-        
-        string s;
-        cin >> s;
+     	
+     	ll n, g, b;
+     	cin >> n >> g >> b;
 
-        int n = (int)s.length();
+     	ll half = (n + 1) / 2;
 
-        if(is_sorted(all(s))){
+     	ll val3 = (n + 2 * g) / (2 * g);
 
-            cout << "YES\n";
-            continue;
-        }
+     	ll x = val3 - 1;
+     	
+     	ll ans =  x * g + (x - 1) * b;
+     	if(half - (x * g) > 0){
 
-        bool gotOne = (s[0] == '0' ? false : true);
-        bool okay = true;
-        for(int i = 1; i < n; i++){
+     		ans += b;
+     		ans += half - (x * g);
+     	}
 
-            if(s[i] == '1') gotOne = true;
-            if(gotOne and s[i] == s[i - 1] and s[i] == '0') okay = false;
-            
-        }   
+     	if(ans < n){
 
-        if(okay){
+     		ans = n;
+     	}
 
-            cout << "YES\n";
-            continue;
-        }
+     	cout << ans << endl;
 
-        bool gotZero = (s[n - 1] == '1' ? false : true);
-        okay = true;
-        for(int i = n - 2; i >= 0; i--){
-
-            if(s[i] == '0') gotZero = true;
-            if(gotZero and s[i] == s[i + 1] and s[i] == '1') okay = false;
-            
-        }
-
-        cout << (okay ? "YES\n" : "NO\n");
     }
     return 0;
 }

@@ -43,7 +43,47 @@ ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n
     
                 /*******************************************************************************/
 
+const int N = 26;
+vector<int> edges[N];
+vector<int> ans;
 
+bool isCyclic(int node, string &s, int parent, vector<bool> &visited){
+
+	visited[node] = true;
+
+	for(auto nbr : edges[node]){
+
+		if(nbr == parent) continue;
+
+		if(visited[nbr]) return true;
+		if(isCyclic(nbr, s, node, visited)) return true;
+		else return false;
+	}
+
+	return false;
+}	
+
+
+bool dfs(int node, string &s, int d, int parent){
+
+	//db1((char)(node + 'a'));
+	//db2(node, parent);
+	ans.push_back(node);
+
+	for(auto nbr : edges[node]){
+		//db2(node, nbr);
+		if(nbr == parent) continue;
+		if(!dfs(nbr, s, d, node)) return false;
+		else return true;
+	}
+
+	if((int)ans.size() == d){
+
+		return true;
+	}
+
+	return false;
+}
 
 int main(){
     ios::sync_with_stdio(0);
@@ -54,41 +94,67 @@ int main(){
     while(t--){
         
         string s;
-        cin >> s;
+    	cin >> s;
+    	int n = (int)s.length();
 
-        int n = (int)s.length();
+    	for(int i = 0; i < N; i++) edges[i].clear();
 
-        if(is_sorted(all(s))){
+    	for(int i = 1; i < n; i++){
 
-            cout << "YES\n";
-            continue;
-        }
+    		edges[s[i - 1] - 'a'].push_back(s[i] - 'a');
+    	}
 
-        bool gotOne = (s[0] == '0' ? false : true);
-        bool okay = true;
-        for(int i = 1; i < n; i++){
+    	bool okay = true;
+    	for(int i = 0; i < 26; i++){
+	    	
+	    	vector<bool> visited(26, false);
+	    	if((int)edges[i].size() > 0 and isCyclic(i, s, -1, visited)){
 
-            if(s[i] == '1') gotOne = true;
-            if(gotOne and s[i] == s[i - 1] and s[i] == '0') okay = false;
-            
-        }   
+	    		cout << "NO\n";
+	    		okay = false;
+	    		break;
+	    	}
+	    }
 
-        if(okay){
+	    if(!okay) continue;
 
-            cout << "YES\n";
-            continue;
-        }
+	    set<int> st{all(s)};
+	    int d = (int)st.size();
+	    // db1(d);
+	    // if(dfs(0, s, d, -1)) cout << "askf";
 
-        bool gotZero = (s[n - 1] == '1' ? false : true);
-        okay = true;
-        for(int i = n - 2; i >= 0; i--){
+	    okay = false;
+	    string p = "";	
+	    for(int i = 0; i < 26; i++){
 
-            if(s[i] == '0') gotZero = true;
-            if(gotZero and s[i] == s[i + 1] and s[i] == '1') okay = false;
-            
-        }
+	    	ans.clear();
+	    	if(dfs(i, s, d, -1)){
 
-        cout << (okay ? "YES\n" : "NO\n");
+	    		okay = true;
+	    		for(auto it : ans) {
+	    			
+	    			p += (char)(it + 'a');
+	    			
+	    		}
+	    		break;
+	    	}
+	    }
+
+	   	string alpha = "abcdefghijklmnopqrstuvwxyz";
+	   	
+	   	if(!okay){
+
+	   		cout << "NO\n";
+	   		continue;
+	   	}
+	   	
+	   	cout << "YES\n";
+	   	cout << p;
+	   	for(int i = 0; i < 26; i++) {
+
+	   		if(p.find(alpha[i]) == -1) cout << alpha[i];
+	   	}
+	   	cout << endl;
     }
     return 0;
 }

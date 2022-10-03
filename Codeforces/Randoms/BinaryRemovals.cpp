@@ -52,43 +52,29 @@ int main(){
     int t;
     cin>>t;
     while(t--){
-        
-        string s;
-        cin >> s;
+     	
+     	string s;
+     	cin >> s;
 
-        int n = (int)s.length();
+     	int n = (int)s.length();
 
-        if(is_sorted(all(s))){
+     	if(is_sorted(all(s))){
 
-            cout << "YES\n";
-            continue;
-        }
+     		cout << "YES\n";
+     		continue;
+     	}
 
-        bool gotOne = (s[0] == '0' ? false : true);
-        bool okay = true;
-        for(int i = 1; i < n; i++){
+     	int a = s.rfind("00");
+     	int b = s.find("11");
 
-            if(s[i] == '1') gotOne = true;
-            if(gotOne and s[i] == s[i - 1] and s[i] == '0') okay = false;
-            
-        }   
+     	if(a != -1 and b != -1 and b < a){
 
-        if(okay){
+     		cout << "NO\n";
+     	}
+     	else{
 
-            cout << "YES\n";
-            continue;
-        }
-
-        bool gotZero = (s[n - 1] == '1' ? false : true);
-        okay = true;
-        for(int i = n - 2; i >= 0; i--){
-
-            if(s[i] == '0') gotZero = true;
-            if(gotZero and s[i] == s[i + 1] and s[i] == '1') okay = false;
-            
-        }
-
-        cout << (okay ? "YES\n" : "NO\n");
+     		cout << "YES\n";
+     	}
     }
     return 0;
 }

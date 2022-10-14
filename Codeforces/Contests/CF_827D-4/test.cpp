@@ -26,7 +26,7 @@ typedef long double ld;
 #define PI 3.141592653589793238462
 #define total_set_bits __builtin_popcountll
 #define endl '\n'
-#define ll int
+
 
 ll expo(ll a, ll b, ll mod) {ll res = 1; while (b > 0) {if (b & 1)res = (res * a) % mod; a = (a * a) % mod; b = b >> 1;} return res;}
 void extendgcd(ll a, ll b, ll*v) {if (b == 0) {v[0] = 1; v[1] = 0; v[2] = a; return ;} extendgcd(b, a % b, v); ll x = v[1]; v[1] = v[0] - v[1] * (a / b); v[0] = x; return;} //pass an arry of size1 3 // return x, y, gcd
@@ -49,51 +49,19 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin>>t;
+    int t = 1;
+    // cin>>t;
     while(t--){
         
-        ll n;
-        cin >> n;
-        vector<ll> a(n);
-        rep(i, n) cin >> a[i];
+        ll a = 999815193, b = 913891315, c = 998913191, d = 89637645;
 
+        ll val = a | b;
+        val |= d;
 
-        vector<bool> visited(n, false);
-        int x = 0;
-        int times = min(31, n);
-        for(int tt = 0; tt < times; tt++){
+        for(int b = 31; b >= 0; b--){
 
-            int idx = -1, val = x;
-            //db1(val);
-
-            for(int i = 0; i < n; i++){
-
-                if(visited[i]) continue;
-
-                if((x | a[i]) > val){
-
-                    //db3(a[i], (x | a[i]), val);
-                    val = x | a[i];
-                    idx = i;
-                }
-            }
-
-            if(idx != -1){
-
-                visited[idx] = true;
-                cout << a[idx] << " ";
-                x |= a[idx];
-            }
+        	cout << (val >> b & 1) << " ";
         }
-
-        for(int i = 0; i < n; i++){
-
-            if(visited[i] == false) cout << a[i] << " ";
-        }
-
-        cout << endl;
     }
-
     return 0;
 }

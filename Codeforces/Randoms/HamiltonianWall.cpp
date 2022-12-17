@@ -49,21 +49,71 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    // cin>>t;
+    int t;
+    cin>>t;
     while(t--){
-        	
-        int n = 99999;
+     	
+     	ll n;
+     	cin >> n;
 
-        int a = 2;
+     	vector<vector<char>> grid(2, vector<char>(n));
 
-        while(n--) {
+     	rep(i, 2) {
 
-            cout << a << " " << a - 1 << endl;
-            cout << a << " " << a + 1 << endl;
-            a += 2;
-        }
+     		rep(j, n) cin >> grid[i][j];
+     	}   
 
+     	bool okay = false;
+
+     	for(int i = 0; i < 2; i++) {
+
+     		auto g = grid;
+     		if(g[i][0] == 'W') continue;
+
+     		int x = i;
+
+     		set<pair<int,int>> st;
+     		for(int r = 0; r < 2; r++) {
+
+     			for(int c = 0; c < n; c++) {
+
+     				if(g[r][c] == 'B') st.insert({r, c});
+     			}
+     		}
+
+     		st.erase({x, 0});
+     		g[x][0] = 'W';
+     		int k = 0;
+
+     		while(!st.empty()) {
+
+
+     			if(g[x ^ 1][k] == 'B') {
+
+     				x ^= 1;
+     				g[x][k] = 'W';
+     				st.erase({x, k});
+
+     			}
+     			else{
+
+     				if(k + 1 < n and g[x][k + 1] == 'B'){
+
+     					k += 1;
+     					g[x][k] = 'W';
+     					st.erase({x, k});
+     				}
+     				else if(k + 1 < n) {
+
+     					break;
+     				}
+     			}
+     		}
+
+     		if(st.empty()) okay = true;
+     	}
+
+     	cout << (okay ? "YES\n" : "NO\n");
     }
     return 0;
 }

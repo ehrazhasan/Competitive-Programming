@@ -49,21 +49,38 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    // cin>>t;
+    int t;
+    cin>>t;
     while(t--){
+        
+        ll n;
+        string s;
+        cin >> n >> s;
+
+        map<string, int> seen;
+
+        bool okay = false;
+
+        for(int i = 1; i < n; i++) {
+
+        	string a = "";
+        	a += s[i - 1];
+        	a += s[i];
+
         	
-        int n = 99999;
+        	if(seen[a]) {
 
-        int a = 2;
-
-        while(n--) {
-
-            cout << a << " " << a - 1 << endl;
-            cout << a << " " << a + 1 << endl;
-            a += 2;
+        		if(seen[a] - 1 != i - 1) {
+        			okay = true;
+        			break;
+        		}
+        	}
+        	else
+        		seen[a] = i + 1;
         }
 
+        
+        cout << (okay ? "YES\n" : "NO\n");
     }
     return 0;
 }

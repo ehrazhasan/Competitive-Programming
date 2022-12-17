@@ -26,6 +26,7 @@ typedef long double ld;
 #define PI 3.141592653589793238462
 #define total_set_bits __builtin_popcountll
 #define endl '\n'
+#define ll int
 
 
 ll expo(ll a, ll b, ll mod) {ll res = 1; while (b > 0) {if (b & 1)res = (res * a) % mod; a = (a * a) % mod; b = b >> 1;} return res;}
@@ -42,28 +43,111 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
     
                 /*******************************************************************************/
+const int N = 31625;
+
+vector<bool> isPrime(N + 1, 1);
+vector<ll> primes;
+void getPrime(){
+
+	for(int i = 2; i <= N; i++) {
+
+		if(isPrime[i]) {
+
+			primes.push_back(i);
+			for(int j = 2 * i; j <= N; j += i) {
+
+				isPrime[j] = 0;
+			}
+		}
+	}
+}
 
 
+struct custom_hash {
+    static uint64_t splitmix64(uint64_t x) {
+        // http://xorshift.di.unimi.it/splitmix64.c
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+ 
+    size_t operator()(uint64_t x) const {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
 
 int main(){
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
-    int t = 1;
-    // cin>>t;
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+    	
+    getPrime();
+    int t;
+    cin>>t;
     while(t--){
-        	
-        int n = 99999;
+     	
+     	ll n;
+     	cin >> n;
 
-        int a = 2;
+     	vector<ll> a(n);
+     	rep(i, n) cin >> a[i];
 
-        while(n--) {
+     	bool okay = false;
+     	for(ll p : primes) {
 
-            cout << a << " " << a - 1 << endl;
-            cout << a << " " << a + 1 << endl;
-            a += 2;
-        }
+     		int cnt = 0;
+     		for(int i = 0; i < n; i++) {
 
+     			if(a[i] % p == 0) {
+
+     				cnt += 1;
+
+     				if(cnt > 1) {
+     					okay = true;
+     					break;
+     				}
+
+     				while(a[i] % p == 0) a[i] /= p;
+     			}
+     		}
+
+     		if(okay) break;
+     	}
+
+     	if(okay) {
+
+     		cout << "YES\n";
+     		continue;
+     	}
+
+     	// unordered_set<ll, custom_hash> seen;
+
+     	// for(int i = 0; i < n; i++) {
+
+     	// 	if(a[i] == 1) continue;
+
+     	// 	if(seen.find(a[i]) != seen.end()) {
+
+     	// 		okay = true;
+     	// 		break;
+     	// 	}
+
+     	// 	seen.insert(a[i]);
+     	// }
+     	map<ll, int> seen;
+ 
+     	for(int i = 0; i < n; i++) {
+ 
+     		if(a[i] == 1) continue;
+     		
+     		seen[a[i]] += 1;
+ 
+     		if(seen[a[i]] > 1) okay = true; 
+     	}
+
+     	cout << (okay ? "YES\n" : "NO\n");
     }
     return 0;
 }

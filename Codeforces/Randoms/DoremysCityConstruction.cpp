@@ -49,21 +49,35 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    // cin>>t;
+    int t;
+    cin>>t;
     while(t--){
-        	
-        int n = 99999;
+        
+        ll n;
+        cin >> n;
 
-        int a = 2;
+        vector<ll> a(n);
+        rep(i, n) cin >> a[i];
 
-        while(n--) {
+        sort(all(a));
 
-            cout << a << " " << a - 1 << endl;
-            cout << a << " " << a + 1 << endl;
-            a += 2;
+        if(a[0] == a[n - 1]) {
+
+        	cout << n / 2 << endl;
+        	continue;
         }
 
+        ll ans = 0;
+
+        for(int i = 1; i < n; i++) {
+
+        	if(a[i] == a[i - 1]) continue;
+
+        	ans = max(ans, i * (n - i));
+
+        }
+
+        cout << ans << endl;
     }
     return 0;
 }

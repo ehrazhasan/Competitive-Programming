@@ -49,21 +49,40 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    // cin>>t;
+    int t;
+    cin>>t;
     while(t--){
-        	
-        int n = 99999;
+        
+        ll n, m;
+        cin >> n >> m;
 
-        int a = 2;
+        vector<ll> mn(n + 1, n + 1);
+        
+        rep(i, m) {
 
-        while(n--) {
+        	ll x, y;
+        	cin >> x >> y;
 
-            cout << a << " " << a - 1 << endl;
-            cout << a << " " << a + 1 << endl;
-            a += 2;
+            if(x > y) swap(x, y);
+
+            mn[x] = min(mn[x], y);
+
         }
 
+        for(int i = n; i ; i--) {
+
+            if(i + 1 <= n)
+                mn[i] = min(mn[i + 1], mn[i]);
+        }
+
+        ll badSegs = 0;
+        for(int i = 1; i <= n; i++) {
+
+            badSegs += (n - mn[i] + 1);
+        }   
+
+        
+        cout << (n * (n + 1)) / 2 - badSegs << endl; 
     }
     return 0;
 }

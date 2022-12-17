@@ -49,21 +49,48 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
+
+    if (fopen("div7.in", "r")) {
+		freopen("div7.in", "r", stdin);
+		freopen("div7.out", "w", stdout);
+	}
+
     int t = 1;
     // cin>>t;
     while(t--){
-        	
-        int n = 99999;
+        
+        ll n;
+        cin >> n;
 
-        int a = 2;
+        ll a[7];
+        rep(i, 7) a[i] = n + 1;
 
-        while(n--) {
+        vector<ll> b(n);
+        rep(i, n) cin >> b[i];
 
-            cout << a << " " << a - 1 << endl;
-            cout << a << " " << a + 1 << endl;
-            a += 2;
+        ll ans = 0;
+
+        ll sum = 0;
+        for(int i = 0; i < n; i++) {
+
+        	sum += b[i];
+
+        	ll rem = sum % 7;
+
+        	if(rem == 0) ans = max(ans, i + 1LL);
+
+        	if(a[rem] == n + 1) {
+
+        		a[rem] = i + 1;
+        	}
+        	else{
+
+        		
+        		ans = max(ans, i + 1 - a[rem]);
+        	}
         }
 
+        cout << ans << endl;
     }
     return 0;
 }

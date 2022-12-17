@@ -49,21 +49,28 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    // cin>>t;
+    int t;
+    cin>>t;
     while(t--){
-        	
-        int n = 99999;
+     	
+     	ll n;
+     	cin >> n;
 
-        int a = 2;
+     	vector<ll> a(n);
+     	rep(i, n) cin >> a[i];
 
-        while(n--) {
+     	const int N = 1e5 + 5;
+     	ll mark[N] = {0}; 
 
-            cout << a << " " << a - 1 << endl;
-            cout << a << " " << a + 1 << endl;
-            a += 2;
-        }
+     	for(int i = 0; i < n; i++) mark[a[i]] += 1;
 
+     	ll mx = *max_element(all(a));
+     	ll mn = *min_element(all(a));	
+
+     	ll ans;
+     	if(mx == mn) ans = n * (n - 1);
+     	else ans = mark[mx] * mark[mn] * 2LL;	
+     	cout << ans << endl;   
     }
     return 0;
 }

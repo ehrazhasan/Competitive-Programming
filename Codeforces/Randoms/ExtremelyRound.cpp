@@ -49,21 +49,20 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    // cin>>t;
+    int t;
+    cin>>t;
     while(t--){
-        	
-        int n = 99999;
+        
+        ll n;
+        cin >> n;
 
-        int a = 2;
+        string s = to_string(n);
+        int len = s.length();
 
-        while(n--) {
+        ll ans = s[0] - '0';
+        ans += 9 * (len - 1);
 
-            cout << a << " " << a - 1 << endl;
-            cout << a << " " << a + 1 << endl;
-            a += 2;
-        }
-
+        cout << ans << endl;
     }
     return 0;
 }

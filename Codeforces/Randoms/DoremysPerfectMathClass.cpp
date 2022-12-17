@@ -49,21 +49,24 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t = 1;
-    // cin>>t;
+    int t;
+    cin>>t;
     while(t--){
-        	
-        int n = 99999;
+        
+        ll n;
+        cin >> n;
 
-        int a = 2;
+        ll g = 0, mx = -INF;
 
-        while(n--) {
+        rep(i, n) {
 
-            cout << a << " " << a - 1 << endl;
-            cout << a << " " << a + 1 << endl;
-            a += 2;
+        	ll x;
+        	cin >> x;
+        	g = gcd(g, x);
+        	mx = max(mx, x);
         }
 
+        cout << mx / g << endl;
     }
     return 0;
 }
